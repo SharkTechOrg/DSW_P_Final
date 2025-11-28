@@ -39,8 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'usuario',
     'carreras',
-    # 'inscripcion',  # Comentada temporalmente - depende de 'alumno'
-    # 'materia',  # Comentada temporalmente - puede depender de otras apps
+    'alumno',
+    'inscripcion',
+    'materia',
 ]
 
 

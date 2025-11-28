@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
-from carrera.models import Carrera
+from carreras.models import Carrera
 # Create your models here.
 class Materia(models.Model):
     """
