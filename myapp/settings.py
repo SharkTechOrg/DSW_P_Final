@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'usuario',
-    'incripcion',  
+    'carreras',
+    # 'inscripcion',  # Comentada temporalmente - depende de 'alumno'
+    # 'materia',  # Comentada temporalmente - puede depender de otras apps
 ]
 
 
