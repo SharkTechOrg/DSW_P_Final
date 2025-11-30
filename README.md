@@ -1,9 +1,17 @@
-# DSW_P_Final
-Sistema web desarrollado en Django para la gestión académica de instituciones educativas.
-
 # Sistema de Gestión Académica
 
 Sistema web desarrollado en Django para la gestión académica de instituciones educativas.
+
+## Características
+
+- **Gestión de Usuarios**: Sistema de autenticación con roles diferenciados
+- **Gestión de Carreras**: CRUD completo para carreras académicas
+- **Gestión de Materias**: CRUD completo para materias por carrera
+- **Gestión de Alumnos**: CRUD completo para alumnos
+- **Sistema de Inscripciones**: Inscripción y baja de alumnos en materias
+- **Control de Cupos**: Validación automática de cupos disponibles
+- **Filtros y Consultas**: Búsquedas por carrera, materia y alumno
+- **Roles de Usuario**: Administrador, Alumno, Invitado
 
 ## Tecnologías
 
@@ -44,7 +52,27 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-### 6. Ejecutar el servidor de desarrollo
+### 6. Cargar Grupos y Permisos Iniciales (Obligatorio)
+```bash
+python manage.py crear_grupos
+```
+
+### 7. Cargar datos de ejemplo (Recomendado)
+```bash
+python manage.py cargar_datos_iniciales
+```
+
+### 8. Ejecutar el servidor
 ```bash
 python manage.py runserver
 ```
+
+El sistema estará disponible en: http://127.0.0.1:8000/
+
+## Usuarios de Prueba
+
+Después de ejecutar `cargar_datos_iniciales`:
+
+- **Administrador**: admin@crui.edu.ar / admin123
+- **Invitado**: invitado@ejemplo.com / 87654321 TODO: quitar grupo invitado, y permitir acceso sin login
+- **Alumnos**: usar email del alumno / contraseña: su DNI

@@ -48,9 +48,6 @@ class Usuario(AbstractUser):
         }
         return roles.get(self.rol, 'Sin rol')
 
-    # def has_role(self, role_name):
-    #     return self.rol == role_name or self.groups.filter(name=f"{role_name.title()}s").exists()
-
     def save(self, *args, **kwargs):
         if not self.pk and not self.password:
             # Contraseña inicial es el DNI
