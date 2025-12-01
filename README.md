@@ -1,4 +1,4 @@
-# Sistema de Gestión Académica
+# Sistema de Gestión Académica | SharkTech
 
 Sistema web desarrollado en Django para la gestión académica de instituciones educativas.
 
