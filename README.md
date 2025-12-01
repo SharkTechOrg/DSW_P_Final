@@ -16,9 +16,9 @@ Sistema web desarrollado en Django para la gestión académica de instituciones 
 ## Tecnologías
 
 - **Python 3.8+**
-- **Django 4.x**
+- **Django 5.2.6**
 - **SQLite** (base de datos por defecto)
-- **HTML puro** (sin frameworks CSS)
+- **HTML + CSS** (bootstrap)
 
 ## Instalación y Configuración
 
