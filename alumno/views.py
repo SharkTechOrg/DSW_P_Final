@@ -68,6 +68,9 @@ class AlumnoListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
         context['total_alumnos_count'] = Alumno.objects.count()
         context['alumnos_activos_count'] = Alumno.objects.filter(activo=True).count()
         
+        # Detectar alumnos sin carrera asignada
+        context['alumnos_sin_carrera'] = Alumno.objects.filter(carrera__isnull=True).count()
+        
         return context
 
 

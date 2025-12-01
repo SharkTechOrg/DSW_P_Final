@@ -24,15 +24,15 @@ class InscripcionListView(AdminRequiredMixin, ListView):
     paginate_by = 10
     
     def get_queryset(self):
-        queryset = Inscripcion.objects.filter(activa=True).select_related('alumno', 'materia')
+        queryset = Inscripcion.objects.filter(activa=True).select_related('alumno__usuario', 'materia')
         
         # Filtro por búsqueda
         search = self.request.GET.get('search')
         if search:
             from django.db.models import Q
             queryset = queryset.filter(
-                Q(alumno__nombre__icontains=search) | 
-                Q(alumno__apellido__icontains=search) |
+                Q(alumno__usuario__first_name__icontains=search) | 
+                Q(alumno__usuario__last_name__icontains=search) |
                 Q(alumno__legajo__icontains=search) |
                 Q(materia__nombre__icontains=search) |
                 Q(materia__codigo__icontains=search)

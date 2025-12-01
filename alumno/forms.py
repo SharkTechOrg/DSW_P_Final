@@ -150,6 +150,13 @@ class AlumnoForm(forms.ModelForm):
                 raise ValidationError('Ya existe un alumno con este legajo')
         return legajo.upper()
 
+    def clean_carrera(self):
+        """Validar que se asigne una carrera al alumno."""
+        carrera = self.cleaned_data.get('carrera')
+        if not carrera:
+            raise ValidationError('Debe asignar una carrera al alumno.')
+        return carrera
+    
     def clean(self):
         cleaned_data = super().clean()
         activo = cleaned_data.get('activo')

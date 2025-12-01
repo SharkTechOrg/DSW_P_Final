@@ -157,6 +157,12 @@ class UsuarioForm(forms.ModelForm):
                     raise ValidationError('Ya existe un usuario con este email.')
         
         return email.lower()
+    
+    def clean_grupos(self):
+        grupos = self.cleaned_data.get('grupos')
+        if not grupos or grupos.count() == 0:
+            raise ValidationError('Debe asignar al menos un rol al usuario.')
+        return grupos
 
     def save(self, commit=True):
         usuario = super().save(commit=False)
@@ -165,14 +171,28 @@ class UsuarioForm(forms.ModelForm):
         if not password:
             password = self.cleaned_data['username']
         
-            usuario.set_password(password)
-            usuario.set_password(password)
-            usuario.primer_login = True
+        usuario.set_password(password)
+        usuario.primer_login = True
         
         if commit:
             usuario.save()
             grupos = self.cleaned_data.get('grupos')
             if grupos:
                 usuario.groups.set(grupos)
+                
+                # Si el usuario tiene el rol de Alumno, crear registro en Alumno
+                if grupos.filter(name='Alumnos').exists():
+                    from alumno.models import Alumno
+                    # Solo crear si no existe ya un registro de alumno
+                    if not hasattr(usuario, 'alumno'):
+                        # Crear un alumno "temporal" sin carrera asignada
+                        # El administrador deberá completar los datos desde la gestión de alumnos
+                        from django.utils import timezone
+                        Alumno.objects.create(
+                            usuario=usuario,
+                            legajo=f'TEMP-{usuario.username}',  # Legajo temporal
+                            carrera=None,  # Sin carrera asignada inicialmente
+                            fecha_ingreso=timezone.now().date()
+                        )
         
         return usuario

@@ -48,18 +48,18 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow">
         <div class="container">
-                        <a class="navbar-brand" href="{% url 'dashboard' %}">
+            <a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'carreras_publicas' %}{% endif %}">
                 <i class="bi bi-mortarboard-fill me-2"></i>
                 Sistema Académico | SharkTech
             </a>
             
-            {% if user.is_authenticated %}
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
+                    {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'dashboard' %}">
                             <i class="bi bi-house-fill me-1"></i>Inicio
@@ -109,8 +109,9 @@
                             {% endif %}
                         {% endfor %}
                     {% endif %}
+                    {% endif %}
                     
-                    <!-- Enlaces públicos/consultas -->
+                    <!-- Enlaces públicos/consultas - disponibles para todos -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="publicDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-info-circle me-1"></i>Consultas
@@ -122,12 +123,16 @@
                             <li><a class="dropdown-item" href="{% url 'materias_publicas' %}">
                                 <i class="bi bi-book me-2"></i>Ver Materias
                             </a></li>
+                            <li><a class="dropdown-item" href="{% url 'materias_con_cupo' %}">
+                                <i class="bi bi-people-fill me-2"></i>Materias con Cupo
+                            </a></li>
                         </ul>
                     </li>
                 </ul>
                 
-                <!-- User dropdown -->
+                <!-- User dropdown or Login button -->
                 <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-person-circle me-1"></i>
@@ -155,9 +160,15 @@
                             </a></li>
                         </ul>
                     </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
-            {% endif %}
         </div>
     </nav>
 

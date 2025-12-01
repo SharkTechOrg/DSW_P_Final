@@ -36,7 +36,7 @@ class Usuario(AbstractUser):
         elif self.groups.filter(name='Preceptores').exists():
             return 'preceptor'
         else:
-            return 'invitado'
+            return 'sin_rol'
 
     def get_rol_display(self):
         roles = {
@@ -44,7 +44,7 @@ class Usuario(AbstractUser):
             'alumno': 'Alumno',
             'docente': 'Docente',
             'preceptor': 'Preceptor',
-            'invitado': 'Invitado',
+            'sin_rol': 'Sin rol',
         }
         return roles.get(self.rol, 'Sin rol')
 

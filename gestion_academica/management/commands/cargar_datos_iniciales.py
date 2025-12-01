@@ -40,7 +40,6 @@ class Command(BaseCommand):
                 # Obtener grupos (deben existir previamente)
                 admin_group = Group.objects.get(name='Administradores')
                 alumno_group = Group.objects.get(name='Alumnos')
-                invitado_group = Group.objects.get(name='Invitados')
 
                 # Crear usuarios administradores adicionales
                 admin_user, created = Usuario.objects.get_or_create(
@@ -59,23 +58,6 @@ class Command(BaseCommand):
                     admin_user.save()
                     admin_user.groups.add(admin_group)
                     self.stdout.write(f'✓ Usuario administrador creado: {admin_user.email}')
-
-                # Crear usuario invitado
-                invitado_user, created = Usuario.objects.get_or_create(
-                    email='invitado@ejemplo.com',
-                    defaults={
-                        'username': '87654321',
-                        'first_name': 'Usuario',
-                        'last_name': 'Invitado',
-                        'primer_login': False,
-                        'is_active': True,
-                    }
-                )
-                if created:
-                    invitado_user.set_password('87654321')
-                    invitado_user.save()
-                    invitado_user.groups.add(invitado_group)
-                    self.stdout.write(f'✓ Usuario invitado creado: {invitado_user.email}')
 
                 # Crear carreras de ejemplo
                 carreras_data = [

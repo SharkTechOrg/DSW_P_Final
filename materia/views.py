@@ -46,6 +46,13 @@ class MateriaListView(AdminRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['filtro_form'] = FiltroMateriaForm(self.request.GET or None)
         context['search'] = self.request.GET.get('search', '')
+        
+        # Calcular estadísticas
+        materias_queryset = self.get_queryset()
+        context['materias_activas'] = materias_queryset.filter(activa=True).count()
+        context['total_cupo'] = sum(m.cupo_maximo for m in materias_queryset)
+        context['cupo_disponible'] = sum(m.cupo_disponible for m in materias_queryset)
+        
         return context
 
 
@@ -118,13 +125,37 @@ class MateriasPorCarreraView(LoginRequiredMixin, TemplateView):
         
         return context
     
-class MateriasConCupoView(LoginRequiredMixin, TemplateView):
-    """Vista para ver materias con cupo disponible"""
-    template_name = 'gestion_academica/filtros/materias_con_cupo.html'
+class MateriasConCupoView(TemplateView):
+    """Vista para ver materias con cupo disponible (pública)"""
+    template_name = 'gestion_academica/publico/materias_con_cupo.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['materias'] = MateriaService.obtener_materias_con_cupo()
+        materias = MateriaService.obtener_materias_con_cupo()
+        
+        # Aplicar filtros
+        carrera_id = self.request.GET.get('carrera')
+        anio = self.request.GET.get('anio')
+        cuatrimestre = self.request.GET.get('cuatrimestre')
+        
+        if carrera_id:
+            materias = [m for m in materias if str(m.carrera.id) == carrera_id]
+        
+        if anio:
+            materias = [m for m in materias if str(m.año) == anio]
+        
+        if cuatrimestre:
+            materias = [m for m in materias if str(m.cuatrimestre) == cuatrimestre]
+        
+        context['materias'] = materias
+        context['carreras'] = Carrera.objects.filter(activa=True)
+        context['filtro_carrera'] = carrera_id or ''
+        context['filtro_anio'] = anio or ''
+        context['filtro_cuatrimestre'] = cuatrimestre or ''
+        
+        # Calcular total de cupos disponibles
+        context['total_cupos_disponibles'] = sum(m.cupo_disponible for m in materias)
+        
         return context
     
 class MateriasPorCarreraView(LoginRequiredMixin, TemplateView):

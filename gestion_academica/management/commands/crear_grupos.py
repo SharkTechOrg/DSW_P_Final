@@ -11,8 +11,7 @@ class Command(BaseCommand):
             'Administradores',
             'Alumnos', 
             'Docentes',
-            'Preceptores',
-            'Invitados'
+            'Preceptores'
         ]
 
         for grupo_name in grupos:
@@ -25,7 +24,6 @@ class Command(BaseCommand):
         alumno_group = Group.objects.get(name='Alumnos')
         docente_group = Group.objects.get(name='Docentes')
         preceptor_group = Group.objects.get(name='Preceptores')
-        invitado_group = Group.objects.get(name='Invitados')
 
         # Permisos para Administradores (todos los permisos)
         all_permissions = Permission.objects.all()
@@ -65,14 +63,6 @@ class Command(BaseCommand):
         )
         preceptor_group.permissions.set(preceptor_permissions)
         self.stdout.write('✓ Permisos asignados a Preceptores: CRUD alumnos e inscripciones')
-
-        # Permisos para Invitados (solo lectura limitada)
-        invitado_permissions = Permission.objects.filter(
-            content_type__model__in=['carrera', 'materia'],
-            codename__startswith='view_'
-        )
-        invitado_group.permissions.set(invitado_permissions)
-        self.stdout.write('✓ Permisos asignados a Invitados: VIEW carreras y materias')
 
         self.stdout.write(
             self.style.SUCCESS('¡Grupos y permisos creados exitosamente!')

@@ -19,7 +19,7 @@ class Alumno(models.Model):
         verbose_name='Usuario'
     )
     legajo = models.CharField(
-        max_length=10,
+        max_length=20,
         unique=True,
         verbose_name='Legajo',
         help_text='Identificador único del alumno'
@@ -28,7 +28,10 @@ class Alumno(models.Model):
         Carrera,
         on_delete=models.PROTECT,
         related_name='alumnos',
-        verbose_name='Carrera'
+        verbose_name='Carrera',
+        null=True,
+        blank=True,
+        help_text='Requerido para completar el registro del alumno'
     )
     fecha_ingreso = models.DateField(
         verbose_name='Fecha de Ingreso'

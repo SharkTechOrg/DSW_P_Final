@@ -54,12 +54,29 @@ class Materia(models.Model):
         # Validar que el año no supere la duración de la carrera
         if self.carrera and self.año > self.carrera.duracion_anios:
             raise ValidationError(f'El año {self.año} supera la duración de la carrera ({self.carrera.duracion_anios} años)')
+        
+        # Validar que no exista otra materia con el mismo nombre en la misma carrera
+        if self.carrera and self.nombre:
+            query = Materia.objects.filter(
+                carrera=self.carrera,
+                nombre__iexact=self.nombre
+            )
+            if self.pk:
+                query = query.exclude(pk=self.pk)
+            
+            if query.exists():
+                raise ValidationError(f'Ya existe una materia con el nombre "{self.nombre}" en la carrera {self.carrera.nombre}')
 
     @property
     def cupo_disponible(self):
         """Propiedad que calcula el cupo disponible"""
         inscriptos = self.inscripciones.filter(activa=True).count()
         return self.cupo_maximo - inscriptos
+    
+    @property
+    def inscriptos_actuales(self):
+        """Propiedad que retorna la cantidad de inscriptos actuales"""
+        return self.inscripciones.filter(activa=True).count()
 
     @property
     def tiene_cupo(self):
