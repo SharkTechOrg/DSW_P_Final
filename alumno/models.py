@@ -2,7 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from usuario.models import Usuario
-from carreras.models import Carrera
+from carrera.models import Carrera
 import re
 
 
@@ -22,7 +22,7 @@ class Alumno(models.Model):
         max_length=10,
         unique=True,
         verbose_name='Legajo',
-        help_text='Formato: LEG-YYYY-NNNN'
+        help_text='Identificador único del alumno'
     )
     carrera = models.ForeignKey(
         Carrera,
@@ -81,13 +81,13 @@ class Alumno(models.Model):
         """
         Validaciones personalizadas del modelo.
         """
-        # Validar formato del legajo (LEG-YYYY-NNNN)
-        if self.legajo:
-            patron = r'^LEG-\d{4}-\d{4}$'
-            if not re.match(patron, self.legajo):
-                raise ValidationError({
-                    'legajo': 'El legajo debe tener el formato LEG-YYYY-NNNN'
-                })
+        # Validar formato del legajo (LEG-YYYY-NNNN) - REMOVIDO A PEDIDO DEL USUARIO
+        # if self.legajo:
+        #     patron = r'^LEG-\d{4}-\d{4}$'
+        #     if not re.match(patron, self.legajo):
+        #         raise ValidationError({
+        #             'legajo': 'El legajo debe tener el formato LEG-YYYY-NNNN'
+        #         })
 
         # Validar que la fecha de ingreso no sea futura
         if self.fecha_ingreso and self.fecha_ingreso > timezone.now().date():

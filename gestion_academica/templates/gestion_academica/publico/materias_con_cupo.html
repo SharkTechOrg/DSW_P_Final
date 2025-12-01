@@ -1,0 +1,280 @@
+{% extends 'gestion_academica/base.html' %}
+
+{% block title %}Materias con Cupo Disponible - Sistema Académico{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="d-flex align-items-center mb-2">
+            <i class="bi bi-people-fill text-success me-3" style="font-size: 2.5rem;"></i>
+            <div>
+                <h1 class="mb-1">Materias con Cupo Disponible</h1>
+                <p class="text-muted mb-0">Oportunidades de inscripción disponibles</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <div class="btn-group" role="group">
+            <a href="{% url 'materias_publicas' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-journals"></i>
+                Todas las Materias
+            </a>
+            <a href="{% url 'carreras_publicas' %}" class="btn btn-outline-primary">
+                <i class="bi bi-mortarboard"></i>
+                Ver Carreras
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Alert -->
+<div class="alert alert-success border-success" role="alert">
+    <div class="d-flex align-items-center">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <div>
+            <h5 class="alert-heading mb-1">¡Inscripciones Abiertas!</h5>
+            <p class="mb-0">
+                Estas son las materias que actualmente tienen cupo disponible para nuevas inscripciones.
+                <strong>¡No pierdas la oportunidad de inscribirte!</strong>
+            </p>
+        </div>
+    </div>
+</div>
+
+{% if materias_con_cupo %}
+    <!-- Summary Stats -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="card-title mb-0">Materias Disponibles</h6>
+                            <h4 class="mb-0">{{ materias_con_cupo|length }}</h4>
+                        </div>
+                        <div class="ms-3">
+                            <i class="bi bi-check-circle" style="font-size: 2rem; opacity: 0.7;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="card-title mb-0">Cupos Totales</h6>
+                            <h4 class="mb-0">{% for m in materias_con_cupo %}{{ m.cupo_disponible|add:forloop.counter0 }}{% endfor %}</h4>
+                        </div>
+                        <div class="ms-3">
+                            <i class="bi bi-people" style="font-size: 2rem; opacity: 0.7;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="card-title mb-0">Carreras Involucradas</h6>
+                            <h4 class="mb-0">{% regroup materias_con_cupo by carrera as carreras_list %}{{ carreras_list|length }}</h4>
+                        </div>
+                        <div class="ms-3">
+                            <i class="bi bi-mortarboard" style="font-size: 2rem; opacity: 0.7;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subjects Table -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h5 class="mb-0">
+                        <i class="bi bi-list-check"></i>
+                        Materias con Cupo Disponible
+                    </h5>
+                    <small class="text-muted">{{ materias_con_cupo|length }} oportunidades de inscripción</small>
+                </div>
+                <div class="col-auto">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary">
+                            <i class="bi bi-funnel"></i>
+                            Filtros
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary">
+                            <i class="bi bi-download"></i>
+                            Exportar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">
+                                <i class="bi bi-book me-1"></i>
+                                Materia
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-hash me-1"></i>
+                                Código
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-mortarboard me-1"></i>
+                                Carrera
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-calendar2-date me-1"></i>
+                                Período
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-person-check me-1"></i>
+                                Inscriptos
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-people me-1"></i>
+                                Cupo Máximo
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Disponible
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-graph-up me-1"></i>
+                                Ocupación
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in materias_con_cupo %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-journal text-primary me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">{{ materia.nombre }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ materia.codigo }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">
+                                    <i class="bi bi-building me-1"></i>
+                                    {{ materia.carrera.nombre }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="text-center">
+                                    <div class="badge bg-info">{{ materia.año }}° Año</div>
+                                    <div class="badge bg-primary mt-1">{{ materia.get_cuatrimestre_display }}</div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-warning text-dark">{{ materia.inscriptos_actuales }}</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-light text-dark">{{ materia.cupo_maximo }}</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    {{ materia.cupo_disponible }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                        {% widthratio materia.inscriptos_actuales materia.cupo_maximo 100 as ocupacion %}
+                                        <div class="progress-bar {% if ocupacion >= 80 %}bg-warning{% elif ocupacion >= 60 %}bg-info{% else %}bg-success{% endif %}" 
+                                             style="width: {{ ocupacion }}%"></div>
+                                    </div>
+                                    <small class="text-muted">{{ ocupacion }}%</small>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="card-footer bg-light">
+            <div class="row align-items-center">
+                <div class="col">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle"></i>
+                        Total de materias con cupo disponible: <strong>{{ materias_con_cupo|length }}</strong>
+                    </small>
+                </div>
+                <div class="col-auto">
+                    <div class="badge bg-success p-2">
+                        <i class="bi bi-check-circle"></i>
+                        ¡Inscripciones abiertas!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <!-- Empty State -->
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <div class="mb-4">
+                <i class="bi bi-people-fill text-muted" style="font-size: 4rem;"></i>
+            </div>
+            <h4 class="text-muted mb-3">No hay cupos disponibles</h4>
+            <p class="text-muted mb-4">
+                Actualmente no hay materias con cupo disponible para nuevas inscripciones.
+                <br>Te recomendamos revisar más tarde o contactar al área académica.
+            </p>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>Consejo:</strong> Las inscripciones suelen abrir en períodos específicos del año académico.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Related Links -->
+<div class="card bg-light mt-4">
+    <div class="card-body">
+        <h6 class="card-title">
+            <i class="bi bi-link-45deg"></i>
+            Enlaces Relacionados
+        </h6>
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <a href="{% url 'materias_publicas' %}" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-journals me-1"></i>
+                    Ver Todas las Materias
+                </a>
+            </div>
+            <div class="col-md-6 mb-2">
+                <a href="{% url 'carreras_publicas' %}" class="btn btn-outline-success w-100">
+                    <i class="bi bi-mortarboard me-1"></i>
+                    Ver Carreras Disponibles
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

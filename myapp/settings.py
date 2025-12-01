@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'alumno',
     'inscripcion',
     'gestion_academica',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

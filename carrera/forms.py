@@ -8,18 +8,20 @@ class CarreraForm(forms.ModelForm):
     """
     class Meta:
         model = Carrera
-        fields = ['nombre', 'codigo', 'descripcion', 'duracion_años']
+        fields = ['nombre', 'codigo', 'descripcion', 'duracion_anios', 'activa']
         labels = {
             'nombre': 'Nombre de la Carrera',
             'codigo': 'Código',
             'descripcion': 'Descripción',
-            'duracion_años': 'Duración en Años',
+            'duracion_anios': 'Duración en Años',
+            'activa': 'Carrera Activa',
         }
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Ej: Técnico en Programación'}),
             'codigo': forms.TextInput(attrs={'placeholder': 'Ej: TP2024', 'style': 'text-transform: uppercase;'}),
             'descripcion': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Descripción de la carrera...'}),
-            'duracion_años': forms.NumberInput(attrs={'min': '1', 'max': '10'}),
+            'duracion_anios': forms.NumberInput(attrs={'min': '1', 'max': '10'}),
+            'activa': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
     def clean_nombre(self):

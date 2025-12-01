@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('nombre', models.CharField(max_length=200, unique=True, verbose_name='Nombre de la Carrera')),
                 ('codigo', models.CharField(max_length=10, unique=True, validators=[django.core.validators.RegexValidator(message='Formato: AA1234', regex='^[A-Z]{2,4}\\d{2,4}$')], verbose_name='Código')),
                 ('descripcion', models.TextField(blank=True, verbose_name='Descripción')),
-                ('duracion_años', models.PositiveIntegerField(validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(10)], verbose_name='Duración en Años')),
+                ('duracion_anios', models.PositiveIntegerField(validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(10)], verbose_name='Duración en Años')),
                 ('activa', models.BooleanField(default=True, verbose_name='Activa')),
                 ('fecha_creacion', models.DateTimeField(auto_now_add=True)),
             ],

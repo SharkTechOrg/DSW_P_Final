@@ -1,0 +1,201 @@
+{% extends 'gestion_academica/base.html' %}
+{% load widget_tweaks %}
+{% block title %}Materias Disponibles - Sistema Académico{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="bg-light p-4 rounded">
+            <h1 class="mb-2">
+                <i class="bi bi-journal-text"></i>
+                Materias Disponibles
+            </h1>
+            <p class="mb-0 text-muted">Aquí puedes consultar todas las materias disponibles, organizadas por carrera.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Form -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-funnel"></i>
+                    Filtrar por Carrera
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="get" class="row g-3 align-items-end">
+                    <div class="col-md-8">
+                        <label for="{{ filtro_form.carrera.id_for_label }}" class="form-label">
+                            {{ filtro_form.carrera.label }}
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-book"></i>
+                            </span>
+                            {{ filtro_form.carrera|add_class:"form-select" }}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-grid gap-2 d-md-flex">
+                            <button type="submit" class="btn btn-success flex-fill">
+                                <i class="bi bi-search"></i>
+                                Filtrar
+                            </button>
+                            <a href="{% url 'materias_publicas' %}" class="btn btn-outline-secondary flex-fill">
+                                <i class="bi bi-arrow-clockwise"></i>
+                                Ver Todas
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if materias %}
+    <!-- Materias Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-table"></i>
+                        Listado de Materias
+                        {% if request.GET.carrera %}
+                            <small class="opacity-75">- Filtrado por carrera</small>
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col">
+                                        <i class="bi bi-journal-bookmark"></i>
+                                        Materia
+                                    </th>
+                                    <th scope="col">
+                                        <i class="bi bi-hash"></i>
+                                        Código
+                                    </th>
+                                    <th scope="col">
+                                        <i class="bi bi-mortarboard"></i>
+                                        Carrera
+                                    </th>
+                                    <th scope="col" class="text-center">
+                                        <i class="bi bi-calendar-event"></i>
+                                        Año
+                                    </th>
+                                    <th scope="col" class="text-center">
+                                        <i class="bi bi-calendar3"></i>
+                                        Cuatrimestre
+                                    </th>
+                                    <th scope="col" class="text-center">
+                                        <i class="bi bi-people"></i>
+                                        Cupo Máximo
+                                    </th>
+                                    <th scope="col">
+                                        <i class="bi bi-card-text"></i>
+                                        Descripción
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for materia in materias %}
+                                <tr>
+                                    <td class="fw-bold text-primary">
+                                        {{ materia.nombre }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ materia.codigo }}</span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ materia.carrera.nombre }}</small>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info">{{ materia.año }}°</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-warning text-dark">
+                                            {{ materia.get_cuatrimestre_display }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-person-check"></i>
+                                            {{ materia.cupo_maximo }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if materia.descripcion %}
+                                            <span class="text-truncate d-inline-block" style="max-width: 200px;" 
+                                                  title="{{ materia.descripcion }}">
+                                                {{ materia.descripcion }}
+                                            </span>
+                                        {% else %}
+                                            <small class="text-muted fst-italic">Sin descripción</small>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <!-- Empty State -->
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <div>
+                    <strong>No hay materias disponibles</strong><br>
+                    {% if request.GET.carrera %}
+                        No se encontraron materias para la carrera seleccionada. Prueba con otro filtro o 
+                        <a href="{% url 'materias_publicas' %}" class="alert-link">ver todas las materias</a>.
+                    {% else %}
+                        No hay materias disponibles en este momento.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Related Links -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-link-45deg"></i>
+                    Enlaces Relacionados
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'carreras_publicas' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-book text-primary"></i>
+                        <strong class="ms-2">Ver Carreras Disponibles</strong>
+                        <p class="mb-0 ms-4 text-muted">Consulta información detallada sobre todas las carreras</p>
+                    </a>
+                    <button disabled class="list-group-item list-group-item-action">
+                        <i class="bi bi-check-circle text-success"></i>
+                        <strong class="ms-2">Ver Materias con Cupo Disponible</strong>
+                        <p class="mb-0 ms-4 text-muted">Encuentra materias que aún tienen lugar para inscribirse</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

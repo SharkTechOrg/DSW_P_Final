@@ -1,0 +1,343 @@
+{% extends 'gestion_academica/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    {% if object %}Editar Usuario{% else %}Nuevo Usuario{% endif %} - Sistema Académico
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'usuario_list' %}">Usuarios</a></li>
+                <li class="breadcrumb-item active">{% if object %}Editar{% else %}Nuevo{% endif %}</li>
+            </ol>
+        </nav>
+        <h1 class="h2 mb-0">
+            <i class="bi bi-{% if object %}person-gear{% else %}person-plus{% endif %} text-primary me-2"></i>
+            {% if object %}Editar Usuario{% else %}Nuevo Usuario{% endif %}
+        </h1>
+        <p class="text-muted">{% if object %}Modifica los datos del usuario{% else %}Completa el formulario para crear un nuevo usuario{% endif %}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Errores generales del formulario -->
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    <h6 class="alert-heading">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Errores del formulario:
+                    </h6>
+                    {% for error in form.non_field_errors %}
+                        <p class="mb-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Datos del Usuario -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-person-badge me-2"></i>
+                        Datos del Usuario
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Email and DNI Row -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                <i class="bi bi-envelope me-1"></i>{{ form.email.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-at"></i>
+                                </span>
+                                {{ form.email|add_class:"form-control" }}
+                            </div>
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.email.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-text">Será usado como nombre de usuario</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">
+                                <i class="bi bi-card-text me-1"></i>{{ form.username.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person-vcard"></i>
+                                </span>
+                                {{ form.username|add_class:"form-control" }}
+                            </div>
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.username.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- First Name and Last Name Row -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                <i class="bi bi-person me-1"></i>{{ form.first_name.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-type"></i>
+                                </span>
+                                {{ form.first_name|add_class:"form-control" }}
+                            </div>
+                            {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.first_name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                <i class="bi bi-person me-1"></i>{{ form.last_name.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-type"></i>
+                                </span>
+                                {{ form.last_name|add_class:"form-control" }}
+                            </div>
+                            {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.last_name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Rol Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.grupos.id_for_label }}" class="form-label">
+                            <i class="bi bi-shield-check me-1"></i>{{ form.grupos.label }}
+                        </label>
+                        <div class="card">
+                            <div class="card-body">
+                                {{ form.grupos|add_class:"list-unstyled mb-0" }}
+                            </div>
+                        </div>
+                        {% if form.grupos.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.grupos.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Password Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">
+                            <i class="bi bi-key me-1"></i>{{ form.password.label }}
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            {{ form.password|add_class:"form-control" }}
+                        </div>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.password.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if form.password.help_text %}
+                            <div class="form-text">
+                                {{ form.password.help_text }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Estado Field -->
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            {{ form.is_active|add_class:"form-check-input" }}
+                            <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                {{ form.is_active.label }}
+                            </label>
+                        </div>
+                        <div class="form-text">Si se desactiva, el usuario no podrá iniciar sesión</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'usuario_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-{% if object %}check{% else %}plus{% endif %}-circle-fill me-2"></i>
+                            {% if object %}Actualizar{% else %}Crear{% endif %} Usuario
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Panel lateral de información -->
+    <div class="col-lg-4">
+        <!-- Roles Information Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    Información sobre Roles
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item px-0">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-warning text-dark me-2">Admin</span>
+                            <div>
+                                <small><strong>Administrador:</strong></small>
+                                <div class="text-muted small">Acceso completo al sistema</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item px-0">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-info text-white me-2">Alumno</span>
+                            <div>
+                                <small><strong>Alumno:</strong></small>
+                                <div class="text-muted small">Puede ver sus materias e inscribirse</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item px-0">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-secondary me-2">Invitado</span>
+                            <div>
+                                <small><strong>Invitado:</strong></small>
+                                <div class="text-muted small">Solo puede consultar la oferta académica</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% if not object %}
+            <!-- Password Information Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-success text-white">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-key me-2"></i>
+                        Contraseña Inicial
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-light border mb-0">
+                        <small>
+                            <i class="bi bi-info-circle me-1"></i>
+                            <strong>Si no se especifica una contraseña:</strong>
+                            <br>Se usará el DNI como contraseña inicial. 
+                            <br>El usuario deberá cambiarla en su primer acceso.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if object %}
+            <!-- User Status Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-light">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-person-circle me-2"></i>
+                        Estado Actual
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">
+                        <strong>Estado:</strong> 
+                        <span class="badge bg-{% if object.is_active %}success{% else %}danger{% endif %}">
+                            {% if object.is_active %}Activo{% else %}Inactivo{% endif %}
+                        </span>
+                    </p>
+                    <p class="mb-2">
+                        <strong>Primer Login:</strong> 
+                        <span class="badge bg-{% if object.primer_login %}warning text-dark{% else %}success{% endif %}">
+                            {% if object.primer_login %}Pendiente{% else %}Completado{% endif %}
+                        </span>
+                    </p>
+                    <p class="mb-0">
+                        <small class="text-muted">
+                            <i class="bi bi-calendar me-1"></i>
+                            Última conexión: {{ object.last_login|default:"Nunca" }}
+                        </small>
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.form-control:focus, .form-select:focus, .form-check-input:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+}
+
+.input-group .form-control,
+.input-group .form-select {
+    border-left: none;
+}
+
+.input-group .form-control:focus,
+.input-group .form-select:focus {
+    border-left: 1px solid #86b7fe;
+}
+
+.card {
+    border: none;
+    border-radius: 0.75rem;
+}
+
+.card-header {
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    font-weight: 500;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.gap-2 {
+    gap: 0.5rem !important;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,274 @@
+{% extends 'gestion_academica/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Nueva Inscripción - Sistema Académico{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'inscripcion_list' %}">Inscripciones</a></li>
+                <li class="breadcrumb-item active">Nueva</li>
+            </ol>
+        </nav>
+        <h1 class="h2 mb-0">
+            <i class="bi bi-journal-plus text-primary me-2"></i>
+            Nueva Inscripción
+        </h1>
+        <p class="text-muted">Registra un alumno en una materia específica</p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Formulario Principal -->
+    <div class="col-lg-8">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            
+            <!-- General Form Errors -->
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    <h6 class="alert-heading">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Errores del formulario:
+                    </h6>
+                    {% for error in form.non_field_errors %}
+                        <p class="mb-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-journal-plus me-2"></i>
+                        Datos de la Inscripción
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Alumno Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.alumno.id_for_label }}" class="form-label">
+                            <i class="bi bi-person-badge me-1"></i>{{ form.alumno.label }}
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-mortarboard"></i>
+                            </span>
+                            {{ form.alumno|add_class:"form-select" }}
+                        </div>
+                        {% if form.alumno.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.alumno.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">Solo se muestran alumnos activos en el sistema</div>
+                    </div>
+
+                    <!-- Materia Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.materia.id_for_label }}" class="form-label">
+                            <i class="bi bi-book me-1"></i>{{ form.materia.label }}
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-journals"></i>
+                            </span>
+                            {{ form.materia|add_class:"form-select" }}
+                        </div>
+                        {% if form.materia.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.materia.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">Solo se muestran materias activas con cupo disponible</div>
+                    </div>
+
+                    <!-- Observaciones Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.observaciones.id_for_label }}" class="form-label">
+                            <i class="bi bi-chat-dots me-1"></i>{{ form.observaciones.label }}
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-pencil-square"></i>
+                            </span>
+                            {{ form.observaciones|add_class:"form-control"|attr:"rows:3" }}
+                        </div>
+                        {% if form.observaciones.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.observaciones.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">Campo opcional para comentarios adicionales</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'inscripcion_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle-fill me-2"></i>Crear Inscripción
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Panel Informativo -->
+    <div class="col-lg-4">
+        <!-- Validaciones Info -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-shield-check me-2"></i>
+                    Validaciones Automáticas
+                </h6>
+            </div>
+            <div class="card-body">
+                <p class="card-text mb-3">El sistema validará automáticamente:</p>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle text-success me-2"></i>
+                        <small>Alumno pertenezca a la misma carrera</small>
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle text-success me-2"></i>
+                        <small>Cupo disponible en la materia</small>
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-check-circle text-success me-2"></i>
+                        <small>Alumno no esté ya inscripto</small>
+                    </li>
+                    <li class="mb-0">
+                        <i class="bi bi-check-circle text-success me-2"></i>
+                        <small>Estados activos de alumno y materia</small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Ayuda Rápida -->
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-lightbulb me-2"></i>
+                    Consejos Útiles
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <small>
+                        <i class="bi bi-info-circle text-primary me-1"></i>
+                        <strong>Carrera:</strong> El alumno y la materia deben pertenecer a la misma carrera.
+                    </small>
+                </div>
+                <div class="mb-3">
+                    <small>
+                        <i class="bi bi-people text-warning me-1"></i>
+                        <strong>Cupo:</strong> Verifica que la materia tenga cupo disponible antes de inscribir.
+                    </small>
+                </div>
+                <div class="mb-0">
+                    <small>
+                        <i class="bi bi-clock text-info me-1"></i>
+                        <strong>Tiempo:</strong> La inscripción se registrará con la fecha y hora actual.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+}
+
+.input-group .form-control,
+.input-group .form-select {
+    border-left: none;
+}
+
+.input-group .form-control:focus,
+.input-group .form-select:focus {
+    border-left: 1px solid #86b7fe;
+}
+
+.card {
+    border: none;
+    border-radius: 0.75rem;
+}
+
+.card-header {
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    font-weight: 500;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.gap-2 {
+    gap: 0.5rem !important;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const alumnoSelect = document.getElementById('id_alumno');
+        const materiaSelect = document.getElementById('id_materia');
+        
+        if (alumnoSelect && materiaSelect) {
+            alumnoSelect.addEventListener('change', function() {
+                const alumnoId = this.value;
+                const url = "{% url 'ajax_load_materias' %}";
+                
+                if (alumnoId) {
+                    // Mostrar indicador de carga
+                    materiaSelect.disabled = true;
+                    materiaSelect.innerHTML = '<option>Cargando materias...</option>';
+                    
+                    fetch(`${url}?alumno=${alumnoId}`)
+                        .then(response => response.text())
+                        .then(html => {
+                            materiaSelect.innerHTML = html;
+                            materiaSelect.disabled = false;
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            materiaSelect.innerHTML = '<option value="">Error al cargar materias</option>';
+                            materiaSelect.disabled = false;
+                        });
+                } else {
+                    materiaSelect.innerHTML = '<option value="">---------</option>';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

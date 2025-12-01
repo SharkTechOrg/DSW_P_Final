@@ -108,18 +108,20 @@ class UsuarioForm(forms.ModelForm):
 
     class Meta:
         model = Usuario
-        fields = ['email', 'username', 'first_name', 'last_name', 'password']
+        fields = ['email', 'username', 'first_name', 'last_name', 'password', 'is_active']
         labels = {
             'email': 'Correo Electrónico',
             'username': 'DNI',
             'first_name': 'Nombre',
             'last_name': 'Apellido',
+            'is_active': 'Usuario Activo',
         }
         widgets = {
             'email': forms.EmailInput(attrs={'placeholder': 'correo@ejemplo.com'}),
             'username': forms.TextInput(attrs={'placeholder': '12345678', 'maxlength': '8'}),
             'first_name': forms.TextInput(attrs={'placeholder': 'Nombre'}),
             'last_name': forms.TextInput(attrs={'placeholder': 'Apellido'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
     def __init__(self, *args, **kwargs):

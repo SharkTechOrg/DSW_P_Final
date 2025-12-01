@@ -1,0 +1,270 @@
+{% extends 'gestion_academica/base.html' %}
+
+{% block title %}Dashboard - Sistema Académico{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="bg-primary text-white p-4 rounded">
+            <h1 class="mb-2">
+                <i class="bi bi-speedometer2"></i>
+                Dashboard del Sistema Académico
+            </h1>
+            <p class="mb-0 lead">Bienvenido al sistema de gestión académica. Desde aquí puedes acceder a todas las funcionalidades según tu rol.</p>
+        </div>
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+    <!-- User Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <i class="bi bi-person-circle"></i>
+                        ¡Hola, {{ user.get_full_name|default:user.email }}!
+                    </h2>
+                    <p class="card-text">
+                        Tu rol: <span class="badge bg-info fs-6">{{ user.get_rol_display }}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if user.rol == 'administrador' %}
+        <!-- Admin Panel -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-gear"></i>
+                            Panel de Administrador
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="{% url 'carrera_list' %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-book"></i> Gestionar Carreras
+                            </a>
+                            <a href="{% url 'materia_list' %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-journal-text"></i> Gestionar Materias
+                            </a>
+                            <a href="{% url 'alumno_list' %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-people"></i> Gestionar Alumnos
+                            </a>
+                            <a href="{% url 'usuario_list' %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-person-gear"></i> Gestionar Usuarios
+                            </a>
+                            <a href="{% url 'inscripcion_list' %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-pencil-square"></i> Gestionar Inscripciones
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-warning text-dark">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-graph-up"></i>
+                            Consultas y Reportes
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <button disabled href="{% url 'materias_por_carrera' %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-search"></i> Consultas por Carrera
+                            </button>
+                            <button disabled class="list-group-item list-group-item-action">
+                                <i class="bi bi-search"></i> Consultas por Materia
+                            </button>
+                            <button disabled class="list-group-item list-group-item-action">
+                                <i class="bi bi-check-circle"></i> Materias con Cupo Disponible
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% elif user.rol == 'alumno' %}
+        <!-- Student Panel -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-info text-white">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-mortarboard"></i>
+                            Panel de Alumno
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="{% url 'mis_materias' %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-journal-check"></i> Mis Materias
+                            </a>
+                            <a href="{% url 'oferta_academica' %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-list-ul"></i> Oferta Académica
+                            </a>
+                            <a href="{% url 'cambiar_password' %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-key"></i> Cambiar Contraseña
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-secondary text-white">
+                        <h4 class="card-title mb-0">
+                            <i class="bi bi-info-circle"></i>
+                            Información Pública
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="{% url 'carreras_publicas' %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-eye"></i> Ver Carreras
+                            </a>
+                            <a href="{% url 'materias_publicas' %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-eye"></i> Ver Materias
+                            </a>
+                            <button disabled class="list-group-item list-group-item-action">
+                                <i class="bi bi-check-circle"></i> Materias con Cupo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Logout Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="text-center">
+                <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-lg">
+                    <i class="bi bi-box-arrow-right"></i>
+                    Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <!-- Public Information for Guests -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-info-circle"></i>
+                        Información Pública
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Como invitado, puedes consultar información general sobre nuestra oferta académica:</p>
+                    
+                    <div class="list-group">
+                        <a href="{% url 'carreras_publicas' %}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-book"></i> Carreras Disponibles
+                        </a>
+                        <a href="{% url 'materias_publicas' %}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-journal-text"></i> Materias Disponibles
+                        </a>
+                        <button disabled class="list-group-item list-group-item-action">
+                            <i class="bi bi-check-circle"></i> Materias con Cupo Disponible
+                        </button>
+                        <a href="{% url 'consultas_carrera' %}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-search"></i> Consultas por Carrera
+                        </a>
+                        <a href="{% url 'consultas_materia' %}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-search"></i> Consultas por Materia
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <p class="mb-0">¿Eres estudiante o administrador? 
+                        <a href="{% url 'login' %}" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            Inicia Sesión
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Statistics Section -->
+{% if stats %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h3 class="card-title mb-0">
+                    <i class="bi bi-bar-chart"></i>
+                    Estadísticas Generales
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-2">
+                        <div class="border rounded p-3">
+                            <div class="fs-2 text-primary">
+                                <i class="bi bi-book"></i>
+                            </div>
+                            <h4 class="text-primary">{{ stats.total_carreras }}</h4>
+                            <small class="text-muted">Total de Carreras</small>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="border rounded p-3">
+                            <div class="fs-2 text-success">
+                                <i class="bi bi-journal-text"></i>
+                            </div>
+                            <h4 class="text-success">{{ stats.total_materias }}</h4>
+                            <small class="text-muted">Total de Materias</small>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="border rounded p-3">
+                            <div class="fs-2 text-info">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <h4 class="text-info">{{ stats.total_alumnos }}</h4>
+                            <small class="text-muted">Total de Alumnos</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3">
+                            <div class="fs-2 text-warning">
+                                <i class="bi bi-pencil-square"></i>
+                            </div>
+                            <h4 class="text-warning">{{ stats.total_inscripciones }}</h4>
+                            <small class="text-muted">Total de Inscripciones</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="border rounded p-3">
+                            <div class="fs-2 text-success">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <h4 class="text-success">{{ stats.materias_con_cupo }}</h4>
+                            <small class="text-muted">Materias con Cupo</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,460 @@
+{% extends 'gestion_academica/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    {% if object %}Editar Alumno{% else %}Nuevo Alumno{% endif %} - Sistema Académico
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'alumno_list' %}">Alumnos</a></li>
+                <li class="breadcrumb-item active">{% if object %}Editar{% else %}Nuevo{% endif %}</li>
+            </ol>
+        </nav>
+        <h1 class="h2 mb-0">
+            <i class="bi bi-{% if object %}pencil{% else %}person-plus{% endif %}-fill text-primary me-2"></i>
+            {% if object %}Editar Alumno{% else %}Nuevo Alumno{% endif %}
+        </h1>
+        <p class="text-muted">{% if object %}Modifica{% else %}Completa{% endif %} la información del alumno y su usuario asociado</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Errores generales del formulario -->
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    <h6 class="alert-heading">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Errores del formulario:
+                    </h6>
+                    {% for error in form.non_field_errors %}
+                        <p class="mb-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Datos Personales -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-person-vcard me-2"></i>
+                        Datos Personales
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- DNI -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.dni.id_for_label }}" class="form-label">
+                                <i class="bi bi-card-text me-1"></i>{{ form.dni.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-123"></i>
+                                </span>
+                                {{ form.dni|add_class:"form-control" }}
+                            </div>
+                            {% if form.dni.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.dni.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-text">{{ form.dni.help_text }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                <i class="bi bi-envelope me-1"></i>{{ form.email.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-at"></i>
+                                </span>
+                                {{ form.email|add_class:"form-control" }}
+                            </div>
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.email.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-text">Se usará para acceso al sistema</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Nombre -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                <i class="bi bi-person me-1"></i>{{ form.first_name.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person-fill"></i>
+                                </span>
+                                {{ form.first_name|add_class:"form-control" }}
+                            </div>
+                            {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.first_name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Apellido -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                <i class="bi bi-person me-1"></i>{{ form.last_name.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person-fill"></i>
+                                </span>
+                                {{ form.last_name|add_class:"form-control" }}
+                            </div>
+                            {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.last_name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">
+                                <i class="bi bi-key me-1"></i>{{ form.password.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-lock"></i>
+                                </span>
+                                {{ form.password|add_class:"form-control" }}
+                            </div>
+                            {% if form.password.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.password.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if form.password.help_text %}
+                                <div class="form-text">{{ form.password.help_text }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Datos Académicos -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-mortarboard me-2"></i>
+                        Datos Académicos
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Legajo -->
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.legajo.id_for_label }}" class="form-label">
+                                <i class="bi bi-hash me-1"></i>{{ form.legajo.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-123"></i>
+                                </span>
+                                {{ form.legajo|add_class:"form-control" }}
+                            </div>
+                            {% if form.legajo.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.legajo.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-text">Número único de identificación</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Carrera -->
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.carrera.id_for_label }}" class="form-label">
+                                <i class="bi bi-building me-1"></i>{{ form.carrera.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-mortarboard"></i>
+                                </span>
+                                {{ form.carrera|add_class:"form-select" }}
+                            </div>
+                            {% if form.carrera.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.carrera.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Año de Ingreso -->
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.fecha_ingreso.id_for_label }}" class="form-label">
+                                <i class="bi bi-calendar me-1"></i>{{ form.fecha_ingreso.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-calendar-event"></i>
+                                </span>
+                                {{ form.fecha_ingreso|add_class:"form-control" }}
+                            </div>
+                            {% if form.fecha_ingreso.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.fecha_ingreso.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-text">Año de ingreso a la institución</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Teléfono -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.telefono.id_for_label }}" class="form-label">
+                                <i class="bi bi-telephone me-1"></i>{{ form.telefono.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-phone"></i>
+                                </span>
+                                {{ form.telefono|add_class:"form-control" }}
+                            </div>
+                            {% if form.telefono.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.telefono.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Dirección -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.direccion.id_for_label }}" class="form-label">
+                                <i class="bi bi-geo-alt me-1"></i>{{ form.direccion.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-map"></i>
+                                </span>
+                                {{ form.direccion|add_class:"form-control" }}
+                            </div>
+                            {% if form.direccion.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.direccion.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Observaciones -->
+                    <div class="mb-3">
+                        <label for="{{ form.observaciones.id_for_label }}" class="form-label">
+                            <i class="bi bi-card-text me-1"></i>{{ form.observaciones.label }}
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-textarea-resize"></i>
+                            </span>
+                            {{ form.observaciones|add_class:"form-control" }}
+                        </div>
+                        {% if form.observaciones.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.observaciones.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Estado Field -->
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            {{ form.activo|add_class:"form-check-input" }}
+                            <label class="form-check-label" for="{{ form.activo.id_for_label }}">
+                                {{ form.activo.label }}
+                            </label>
+                        </div>
+                        <div class="form-text">Si se desactiva, el alumno no aparecerá en los listados activos</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'alumno_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-{% if object %}check{% else %}plus{% endif %}-circle-fill me-2"></i>
+                            {% if object %}Actualizar{% else %}Crear{% endif %} Alumno
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Panel lateral de información -->
+    <div class="col-lg-4">
+        {% if not object %}
+            <!-- Información para nuevo alumno -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        Creación Automática de Usuario
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Al crear un alumno se generará automáticamente:</strong></p>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <strong>Usuario:</strong> Email del alumno
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <strong>Contraseña:</strong> DNI del alumno
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <strong>Grupo:</strong> "Alumnos"
+                        </li>
+                        <li class="mb-0">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <strong>Estado:</strong> Activo, deberá cambiar contraseña
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-light">
+                    <small class="text-muted">
+                        <i class="bi bi-lightbulb me-1"></i>
+                        El alumno podrá acceder usando su email y DNI como contraseña inicial.
+                    </small>
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if object %}
+            <!-- Información del usuario asociado -->
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-person-badge me-2"></i>
+                        Usuario Asociado
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if object.usuario %}
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Email de acceso:</label>
+                            <div class="fw-bold">{{ object.usuario.email }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Usuario:</label>
+                            <div class="fw-bold font-monospace">{{ object.usuario.username }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Grupos:</label>
+                            <div>
+                                {% for grupo in object.usuario.groups.all %}
+                                    <span class="badge bg-primary me-1">{{ grupo.name }}</span>
+                                {% empty %}
+                                    <span class="text-muted">Sin grupos asignados</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label small text-muted">Estado:</label>
+                            <div>
+                                {% if object.usuario.is_active %}
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Activo
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle-fill me-1"></i>Inactivo
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-muted py-3">
+                            <i class="bi bi-person-x display-6"></i>
+                            <p class="mb-0 mt-2">Este alumno no tiene usuario asociado</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+}
+
+.input-group .form-control,
+.input-group .form-select {
+    border-left: none;
+}
+
+.input-group .form-control:focus,
+.input-group .form-select:focus {
+    border-left: 1px solid #86b7fe;
+}
+
+.card {
+    border: none;
+    border-radius: 0.75rem;
+}
+
+.card-header {
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    font-weight: 500;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.gap-2 {
+    gap: 0.5rem !important;
+}
+
+.font-monospace {
+    font-family: 'Courier New', Courier, monospace;
+}
+</style>
+{% endblock %}

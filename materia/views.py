@@ -26,6 +26,15 @@ class MateriaListView(AdminRequiredMixin, ListView):
     def get_queryset(self):
         queryset = Materia.objects.filter(activa=True).select_related('carrera')
         
+        # Filtro por búsqueda
+        search = self.request.GET.get('search')
+        if search:
+            from django.db.models import Q
+            queryset = queryset.filter(
+                Q(nombre__icontains=search) | 
+                Q(codigo__icontains=search)
+            )
+        
         # Filtro por carrera
         carrera_id = self.request.GET.get('carrera')
         if carrera_id:
@@ -36,6 +45,7 @@ class MateriaListView(AdminRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['filtro_form'] = FiltroMateriaForm(self.request.GET or None)
+        context['search'] = self.request.GET.get('search', '')
         return context
 
 

@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.db.models import Q, Count
 from .models import Alumno
 from usuario.models import Usuario
-from carreras.models import Carrera
+from carrera.models import Carrera
 from django.contrib.auth.models import Group
 
 
@@ -103,7 +103,7 @@ class AlumnoService:
     @staticmethod
     def generar_legajo_automatico(año=None):
         """
-        Genera un legajo automático en formato LEG-YYYY-NNNN.
+        Genera un legajo automático en formato YYYY-NNNN.
         
         Args:
             año: año para el legajo (por defecto año actual)
@@ -116,17 +116,20 @@ class AlumnoService:
         
         # Obtener el último legajo del año
         ultimos_legajos = Alumno.objects.filter(
-            legajo__startswith=f'LEG-{año}-'
+            legajo__startswith=f'{año}-'
         ).order_by('-legajo')
         
         if ultimos_legajos.exists():
             ultimo_legajo = ultimos_legajos.first().legajo
             # Extraer el número y sumar 1
-            numero = int(ultimo_legajo.split('-')[-1]) + 1
+            try:
+                numero = int(ultimo_legajo.split('-')[-1]) + 1
+            except ValueError:
+                numero = 1
         else:
             numero = 1
         
-        return f'LEG-{año}-{numero:04d}'
+        return f'{año}-{numero:04d}'
     
     @staticmethod
     def actualizar_alumno(alumno, datos_usuario=None, datos_alumno=None):

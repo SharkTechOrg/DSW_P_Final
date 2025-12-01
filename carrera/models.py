@@ -15,7 +15,7 @@ class Carrera(models.Model):
         verbose_name='Código'
     )
     descripcion = models.TextField(blank=True, verbose_name='Descripción')
-    duracion_años = models.PositiveIntegerField(
+    duracion_anios = models.PositiveIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(10)],
         verbose_name='Duración en Años'
     )

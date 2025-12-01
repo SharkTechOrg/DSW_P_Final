@@ -21,7 +21,28 @@ class CarreraListView(AdminRequiredMixin, ListView):
     paginate_by = 10
     
     def get_queryset(self):
-        return Carrera.objects.filter(activa=True).order_by('nombre')
+        queryset = Carrera.objects.filter(activa=True)
+        search = self.request.GET.get('search')
+        if search:
+            from django.db.models import Q
+            queryset = queryset.filter(
+                Q(nombre__icontains=search) | 
+                Q(codigo__icontains=search)
+            )
+        return queryset.order_by('nombre')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search'] = self.request.GET.get('search', '')
+        # Stats
+        context['total_carreras'] = Carrera.objects.count()
+        context['carreras_activas'] = Carrera.objects.filter(activa=True).count()
+        context['carreras_inactivas'] = Carrera.objects.filter(activa=False).count()
+        # Calculate average duration
+        from django.db.models import Avg
+        avg = Carrera.objects.aggregate(Avg('duracion_anios'))['duracion_anios__avg']
+        context['promedio_duracion'] = round(avg, 1) if avg else 0
+        return context
 
 
 class CarreraCreateView(AdminRequiredMixin, CreateView):

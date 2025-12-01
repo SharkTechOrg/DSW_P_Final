@@ -1,0 +1,256 @@
+{% extends 'gestion_academica/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+    {% if object %}Editar Carrera{% else %}Nueva Carrera{% endif %} - Sistema Académico
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'carrera_list' %}">Carreras</a></li>
+                <li class="breadcrumb-item active">{% if object %}Editar{% else %}Nueva{% endif %}</li>
+            </ol>
+        </nav>
+        <h1 class="h2 mb-0">
+            <i class="bi bi-{% if object %}pencil-square{% else %}plus-circle{% endif %} text-primary me-2"></i>
+            {% if object %}Editar Carrera{% else %}Nueva Carrera{% endif %}
+        </h1>
+        <p class="text-muted">{% if object %}Modifica los datos de la carrera{% else %}Completa el formulario para crear una nueva carrera{% endif %}</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Errores generales del formulario -->
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                    <h6 class="alert-heading">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Errores del formulario:
+                    </h6>
+                    {% for error in form.non_field_errors %}
+                        <p class="mb-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Datos de la Carrera -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-mortarboard me-2"></i>
+                        Datos de la Carrera
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Nombre -->
+                        <div class="col-md-12 mb-3">
+                            <label for="{{ form.nombre.id_for_label }}" class="form-label">
+                                <i class="bi bi-type me-1"></i>{{ form.nombre.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-card-heading"></i>
+                                </span>
+                                {{ form.nombre|add_class:"form-control" }}
+                            </div>
+                            {% if form.nombre.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.nombre.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Código -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.codigo.id_for_label }}" class="form-label">
+                                <i class="bi bi-hash me-1"></i>{{ form.codigo.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-tag"></i>
+                                </span>
+                                {{ form.codigo|add_class:"form-control" }}
+                            </div>
+                            {% if form.codigo.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.codigo.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-text">Código único (ej: ING-SIS)</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Duración -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.duracion_anios.id_for_label }}" class="form-label">
+                                <i class="bi bi-calendar3 me-1"></i>{{ form.duracion_anios.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-clock"></i>
+                                </span>
+                                {{ form.duracion_anios|add_class:"form-control" }}
+                                <span class="input-group-text">años</span>
+                            </div>
+                            {% if form.duracion_anios.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.duracion_anios.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Descripción -->
+                        <div class="col-md-12 mb-3">
+                            <label for="{{ form.descripcion.id_for_label }}" class="form-label">
+                                <i class="bi bi-card-text me-1"></i>{{ form.descripcion.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-textarea-resize"></i>
+                                </span>
+                                {{ form.descripcion|add_class:"form-control" }}
+                            </div>
+                            {% if form.descripcion.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.descripcion.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Activa Checkbox -->
+                         <div class="col-md-12 mb-3">
+                            <div class="form-check form-switch">
+                                {{ form.activa|add_class:"form-check-input" }}
+                                <label class="form-check-label" for="{{ form.activa.id_for_label }}">
+                                    {{ form.activa.label }}
+                                </label>
+                            </div>
+                            <div class="form-text">Si se desactiva, no se podrán inscribir nuevos alumnos.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'carrera_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-{% if object %}check{% else %}plus{% endif %}-circle-fill me-2"></i>
+                            {% if object %}Actualizar{% else %}Crear{% endif %} Carrera
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Panel lateral de información -->
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    Información
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6><i class="bi bi-lightbulb text-warning me-2"></i>Consejos:</h6>
+                    <ul class="list-unstyled ms-3">
+                        <li class="mb-2">
+                            <i class="bi bi-arrow-right text-primary me-2"></i>
+                            <small>Use nombres descriptivos y únicos.</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-arrow-right text-primary me-2"></i>
+                            <small>Los códigos deben ser únicos en el sistema.</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-arrow-right text-primary me-2"></i>
+                            <small>La duración debe ser un número entero positivo.</small>
+                        </li>
+                    </ul>
+                </div>
+                
+                {% if object %}
+                    <div class="mb-3">
+                        <h6><i class="bi bi-clock-history text-info me-2"></i>Estado Actual:</h6>
+                        <p class="mb-1">
+                            <strong>Estado:</strong> 
+                            <span class="badge bg-{% if object.activa %}success{% else %}danger{% endif %}">
+                                {% if object.activa %}Activa{% else %}Inactiva{% endif %}
+                            </span>
+                        </p>
+                    </div>
+                {% endif %}
+                
+                <div class="alert alert-light border">
+                    <i class="bi bi-shield-check me-2"></i>
+                    <small>Todos los campos marcados son obligatorios.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.form-control:focus, .form-select:focus, .form-check-input:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-right: none;
+}
+
+.input-group .form-control,
+.input-group .form-select {
+    border-left: none;
+}
+
+.input-group .form-control:focus,
+.input-group .form-select:focus {
+    border-left: 1px solid #86b7fe;
+}
+
+.card {
+    border: none;
+    border-radius: 0.75rem;
+}
+
+.card-header {
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    font-weight: 500;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.gap-2 {
+    gap: 0.5rem !important;
+}
+</style>
+{% endblock %}

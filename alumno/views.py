@@ -7,7 +7,7 @@ from django.db.models import Q
 from .models import Alumno
 from .forms import AlumnoForm
 from .services import AlumnoService
-from carreras.models import Carrera
+from carrera.models import Carrera
 
 
 # Create your views here.
@@ -63,6 +63,11 @@ class AlumnoListView(LoginRequiredMixin, AdminRequiredMixin, ListView):
         context['search'] = self.request.GET.get('search', '')
         context['carrera_seleccionada'] = self.request.GET.get('carrera', '')
         context['estado_seleccionado'] = self.request.GET.get('estado', '')
+        
+        # Contadores para las tarjetas
+        context['total_alumnos_count'] = Alumno.objects.count()
+        context['alumnos_activos_count'] = Alumno.objects.filter(activo=True).count()
+        
         return context
 
 
@@ -154,8 +159,8 @@ class AlumnoDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
         
         # Dar de baja en lugar de eliminar
         AlumnoService.dar_de_baja_alumno(
-            self.object, 
-            motivo=f\"Baja realizada por {request.user.get_full_name()}\"
+            self.object,
+            motivo=f"Baja realizada por {request.user.get_full_name()}"
         )
         
         messages.warning(

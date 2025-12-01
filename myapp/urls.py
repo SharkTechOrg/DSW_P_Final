@@ -21,8 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('gestion_academica.urls')),
     path('', include('usuario.urls')),
-    path('', include('carrera.urls')),
-    path('', include('materia.urls')),
-    path('', include('alumno.urls')),
-    path('', include('inscripcion.urls')),
+    path('carreras/', include('carrera.urls')),
+    path('materias/', include('materia.urls')),
+    path('alumnos/', include('alumno.urls')),
+    path('inscripciones/', include('inscripcion.urls')),
 ]

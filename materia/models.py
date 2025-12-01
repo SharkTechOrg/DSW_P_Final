@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
-from carreras.models import Carrera
+from carrera.models import Carrera
 # Create your models here.
 class Materia(models.Model):
     """
@@ -52,8 +52,8 @@ class Materia(models.Model):
             self.nombre = self.nombre.strip().title()
         
         # Validar que el año no supere la duración de la carrera
-        if self.carrera and self.año > self.carrera.duracion_años:
-            raise ValidationError(f'El año {self.año} supera la duración de la carrera ({self.carrera.duracion_años} años)')
+        if self.carrera and self.año > self.carrera.duracion_anios:
+            raise ValidationError(f'El año {self.año} supera la duración de la carrera ({self.carrera.duracion_anios} años)')
 
     @property
     def cupo_disponible(self):

@@ -1,0 +1,262 @@
+{% extends 'gestion_academica/base.html' %}
+
+{% block title %}Mis Materias - Sistema Académico{% endblock %}
+
+{% block content %}
+{% if alumno %}
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-journal-check text-success me-3" style="font-size: 2.5rem;"></i>
+                <div>
+                    <h1 class="mb-1">Mis Materias</h1>
+                    <p class="text-muted mb-0">Administra tus materias inscritas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{% url 'oferta_academica' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle"></i>
+                Ver Oferta Académica
+            </a>
+        </div>
+    </div>
+
+    <!-- Student Info Card -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">
+                <i class="bi bi-person-badge"></i>
+                Mi Información Académica
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-vcard text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted">Legajo</small>
+                            <p class="fw-bold mb-0">
+                                <span class="badge bg-secondary">{{ alumno.legajo }}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-building text-success me-2"></i>
+                        <div>
+                            <small class="text-muted">Carrera</small>
+                            <p class="fw-bold mb-0">{{ alumno.carrera.nombre }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-calendar-event text-info me-2"></i>
+                        <div>
+                            <small class="text-muted">Año de Ingreso</small>
+                            <p class="fw-bold mb-0">{{ alumno.fecha_ingreso }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-journals text-warning me-2"></i>
+                        <div>
+                            <small class="text-muted">Materias</small>
+                            <p class="fw-bold mb-0">{{ inscripciones|length }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Materias Section -->
+    <div class="card">
+        {% if inscripciones %}
+            <div class="card-header bg-light">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h5 class="mb-0">
+                            <i class="bi bi-journal-text"></i>
+                            Materias Inscriptas
+                        </h5>
+                        <small class="text-muted">{{ inscripciones|length }} materias activas</small>
+                    </div>
+                    <div class="col-auto">
+                        <div class="badge bg-success">
+                            <i class="bi bi-check-circle"></i>
+                            Inscripto
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">
+                                    <i class="bi bi-book me-1"></i>
+                                    Materia
+                                </th>
+                                <th scope="col">
+                                    <i class="bi bi-hash me-1"></i>
+                                    Código
+                                </th>
+                                <th scope="col">
+                                    <i class="bi bi-calendar2-date me-1"></i>
+                                    Período
+                                </th>
+                                <th scope="col">
+                                    <i class="bi bi-calendar-check me-1"></i>
+                                    Fecha Inscripción
+                                </th>
+                                <th scope="col" width="150">
+                                    <i class="bi bi-gear me-1"></i>
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inscripcion in inscripciones %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-journal text-primary me-2"></i>
+                                        <div>
+                                            <div class="fw-semibold">{{ inscripcion.materia.nombre }}</div>
+                                            <small class="text-muted">{{ inscripcion.materia.carrera.nombre }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ inscripcion.materia.codigo }}</span>
+                                </td>
+                                <td>
+                                    <div class="text-center">
+                                        <div class="badge bg-info">{{ inscripcion.materia.año }}° Año</div>
+                                        <div class="badge bg-primary mt-1">{{ inscripcion.materia.get_cuatrimestre_display }}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-calendar-event text-muted me-2"></i>
+                                        <div>
+                                            <div>{{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}</div>
+                                            <small class="text-muted">{{ inscripcion.fecha_inscripcion|date:"H:i" }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <form method="post" action="{% url 'inscripcion_baja' inscripcion.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" 
+                                                class="btn btn-sm btn-outline-danger" 
+                                                onclick="return confirm('¿Estás seguro de darte de baja de {{ inscripcion.materia.nombre }}?')"
+                                                title="Darme de baja de esta materia">
+                                            <i class="bi bi-x-circle"></i>
+                                            Darme de Baja
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card-footer bg-light">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i>
+                            Total de materias inscriptas: <strong>{{ inscripciones|length }}</strong>
+                        </small>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{% url 'oferta_academica' %}" class="btn btn-sm btn-success">
+                            <i class="bi bi-plus-circle"></i>
+                            Inscribirme a Más Materias
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="card-body text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-journal-x text-muted" style="font-size: 4rem;"></i>
+                </div>
+                <h4 class="text-muted mb-3">No tienes materias inscriptas</h4>
+                <p class="text-muted mb-4">
+                    Aún no te has inscripto a ninguna materia.
+                    <br>Explora la oferta académica y comienza tu inscripción.
+                </p>
+                <a href="{% url 'oferta_academica' %}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-mortarboard"></i>
+                    Ver Oferta Académica
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6 class="mb-1">
+                                <i class="bi bi-lightbulb text-warning"></i>
+                                ¿Necesitas más materias?
+                            </h6>
+                            <small class="text-muted">
+                                Explora todas las materias disponibles en tu carrera y encuentra las que se ajusten a tu plan de estudios.
+                            </small>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <a href="{% url 'oferta_academica' %}" class="btn btn-outline-primary">
+                                <i class="bi bi-search"></i>
+                                Explorar Materias
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <!-- Error State -->
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <div class="mb-4">
+                <i class="bi bi-person-x text-danger" style="font-size: 4rem;"></i>
+            </div>
+            <h4 class="text-danger mb-3">Error de Acceso</h4>
+            <p class="text-muted mb-4">
+                No se encontró información del alumno.
+                <br>Contacta al administrador del sistema.
+            </p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                    <i class="bi bi-house"></i>
+                    Ir al Dashboard
+                </a>
+                <a href="{% url 'logout' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-box-arrow-right"></i>
+                    Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

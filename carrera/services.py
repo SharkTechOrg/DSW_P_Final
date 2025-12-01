@@ -8,7 +8,7 @@ class CarreraService:
     """
     
     @staticmethod
-    def crear_carrera(nombre, codigo, descripcion, duracion_años):
+    def crear_carrera(nombre, codigo, descripcion, duracion_anios):
         """
         Crea una nueva carrera con validaciones
         """
@@ -25,7 +25,7 @@ class CarreraService:
                     nombre=nombre.strip().title(),
                     codigo=codigo.upper(),
                     descripcion=descripcion,
-                    duracion_años=duracion_años
+                    duracion_anios=duracion_anios
                 )
                 
                 return carrera

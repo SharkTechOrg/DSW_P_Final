@@ -1,0 +1,429 @@
+{% extends 'gestion_academica/base.html' %}
+
+{% block title %}{{ object.nombre_completo }} - Detalle del Alumno{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'alumno_list' %}">Alumnos</a></li>
+                <li class="breadcrumb-item active">{{ object.nombre_completo }}</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h1 class="h2 mb-1">
+                    <i class="bi bi-person-circle text-primary me-2"></i>
+                    {{ object.nombre_completo }}
+                </h1>
+                <p class="text-muted mb-0">
+                    <span class="badge bg-info me-2">{{ object.carrera.nombre }}</span>
+                    <span class="badge bg-secondary">Legajo: {{ object.legajo }}</span>
+                </p>
+            </div>
+            <div class="btn-group" role="group">
+                <a href="{% url 'alumno_update' object.pk %}" class="btn btn-primary">
+                    <i class="bi bi-pencil me-2"></i>Editar
+                </a>
+                {% if object.usuario %}
+                    <a href="{% url 'usuario_update' object.usuario.pk %}" class="btn btn-outline-primary">
+                        <i class="bi bi-person-gear me-2"></i>Editar Usuario
+                    </a>
+                {% endif %}
+                <a href="{% url 'alumno_delete' object.pk %}" class="btn btn-outline-danger">
+                    <i class="bi bi-trash me-2"></i>Eliminar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Columna principal -->
+    <div class="col-lg-8">
+        <!-- Datos Personales -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-person-vcard me-2"></i>
+                    Datos Personales
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small text-muted">DNI</label>
+                        <div class="fs-5 fw-bold font-monospace text-primary">
+                            <i class="bi bi-card-text me-2"></i>{{ object.dni }}
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small text-muted">Email</label>
+                        <div class="fs-6">
+                            <a href="mailto:{{ object.email }}" class="text-decoration-none">
+                                <i class="bi bi-envelope me-2"></i>{{ object.email }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small text-muted">Nombre</label>
+                        <div class="fs-6 fw-semibold">
+                            <i class="bi bi-person me-2"></i>{{ object.nombre }}
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small text-muted">Apellido</label>
+                        <div class="fs-6 fw-semibold">
+                            <i class="bi bi-person me-2"></i>{{ object.apellido }}
+                        </div>
+                    </div>
+                </div>
+                {% if object.telefono or object.direccion %}
+                <div class="row">
+                    {% if object.telefono %}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small text-muted">Teléfono</label>
+                        <div class="fs-6">
+                            <i class="bi bi-telephone me-2"></i>{{ object.telefono }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if object.direccion %}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small text-muted">Dirección</label>
+                        <div class="fs-6">
+                            <i class="bi bi-geo-alt me-2"></i>{{ object.direccion }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Datos Académicos -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-mortarboard me-2"></i>
+                    Datos Académicos
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label small text-muted">Legajo</label>
+                        <div class="fs-5 fw-bold text-success">
+                            <i class="bi bi-hash me-2"></i>{{ object.legajo }}
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label small text-muted">Año de Ingreso</label>
+                        <div class="fs-6">
+                            <i class="bi bi-calendar-event me-2"></i>{{ object.fecha_ingreso }}
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label small text-muted">Estado Académico</label>
+                        <div>
+                            {% if object.activo %}
+                                <span class="badge bg-success fs-6">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Activo
+                                </span>
+                            {% else %}
+                                <span class="badge bg-danger fs-6">
+                                    <i class="bi bi-x-circle-fill me-1"></i>Inactivo
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <label class="form-label small text-muted">Carrera</label>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                                <i class="bi bi-building text-white fs-5"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">{{ object.carrera.nombre }}</div>
+                                <small class="text-muted">Código: {{ object.carrera.codigo }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if object.observaciones %}
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <label class="form-label small text-muted">Observaciones</label>
+                        <div class="alert alert-light border">
+                            {{ object.observaciones|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Inscripciones -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-dark">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-journal-bookmark me-2"></i>
+                        Inscripciones a Materias
+                    </h5>
+                    <span class="badge bg-light text-dark">{{ object.inscripciones.count }}</span>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if object.inscripciones.all %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="ps-3">
+                                        <i class="bi bi-book me-1"></i>Materia
+                                    </th>
+                                    <th scope="col">Código</th>
+                                    <th scope="col">Año</th>
+                                    <th scope="col">Cuatrimestre</th>
+                                    <th scope="col">Fecha Inscripción</th>
+                                    <th scope="col">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for inscripcion in object.inscripciones.all %}
+                                <tr>
+                                    <td class="fw-semibold ps-3">{{ inscripcion.materia.nombre }}</td>
+                                    <td><span class="font-monospace">{{ inscripcion.materia.codigo }}</span></td>
+                                    <td><span class="badge bg-secondary">{{ inscripcion.materia.año }}°</span></td>
+                                    <td>{{ inscripcion.materia.get_cuatrimestre_display }}</td>
+                                    <td>{{ inscripcion.fecha_inscripcion|date:"d/m/Y" }}</td>
+                                    <td>
+                                        {% if inscripcion.activa %}
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle-fill me-1"></i>Activa
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">
+                                                <i class="bi bi-x-circle-fill me-1"></i>Inactiva
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-journal-x display-4 text-muted mb-3"></i>
+                        <p class="text-muted mb-0">El alumno no tiene inscripciones registradas</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna lateral -->
+    <div class="col-lg-4">
+        <!-- Usuario del Sistema -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-person-badge me-2"></i>
+                    Usuario del Sistema
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if object.usuario %}
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Email de Acceso</label>
+                        <div class="fw-semibold">
+                            <a href="mailto:{{ object.usuario.email }}" class="text-decoration-none">
+                                <i class="bi bi-envelope-at me-2"></i>{{ object.usuario.email }}
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Usuario</label>
+                        <div class="font-monospace">
+                            <i class="bi bi-person me-2"></i>{{ object.usuario.username }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Estado del Usuario</label>
+                        <div>
+                            {% if object.usuario.is_active %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-person-check-fill me-1"></i>Activo
+                                </span>
+                            {% else %}
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-person-x-fill me-1"></i>Inactivo
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Primer Login</label>
+                        <div>
+                            {% if object.usuario.primer_login %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-clock me-1"></i>Pendiente
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-check-circle-fill me-1"></i>Completado
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Grupos/Roles</label>
+                        <div>
+                            {% for grupo in object.usuario.groups.all %}
+                                <span class="badge bg-primary me-1">{{ grupo.name }}</span>
+                            {% empty %}
+                                <span class="text-muted">Sin grupos asignados</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-0">
+                        <label class="form-label small text-muted">Último Acceso</label>
+                        <div>
+                            {% if object.usuario.last_login %}
+                                <span class="text-success">
+                                    <i class="bi bi-clock-history me-1"></i>
+                                    {{ object.usuario.last_login|date:"d/m/Y H:i" }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted">
+                                    <i class="bi bi-dash-circle me-1"></i>Nunca
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-person-x display-6 text-muted"></i>
+                        <p class="text-muted mt-2 mb-0">Este alumno no tiene usuario asociado</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-graph-up me-2"></i>
+                    Estadísticas
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6 border-end">
+                        <div class="h4 mb-0 text-primary">{{ object.inscripciones.all|length }}</div>
+                        <small class="text-muted">Inscripciones</small>
+                    </div>
+                    <div class="col-6">
+                        <div class="h4 mb-0 text-success">
+                            {% with activas=object.inscripciones.all|length %}{{ activas }}{% endwith %}
+                        </div>
+                        <small class="text-muted">Activas</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Bar -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{% url 'alumno_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Volver a Lista
+                    </a>
+                    <div class="btn-group" role="group">
+                        <a href="{% url 'alumno_update' object.pk %}" class="btn btn-primary">
+                            <i class="bi bi-pencil me-2"></i>Editar Alumno
+                        </a>
+                        {% if object.usuario %}
+                            <a href="{% url 'usuario_update' object.usuario.pk %}" class="btn btn-outline-primary">
+                                <i class="bi bi-person-gear me-2"></i>Gestionar Usuario
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.card {
+    border: none;
+    border-radius: 0.75rem;
+}
+
+.card-header {
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    font-weight: 500;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+}
+
+.font-monospace {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.form-label.small {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+}
+
+.btn-group .btn {
+    border-radius: 0.375rem !important;
+    margin-right: 0.25rem;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+.badge.fs-6 {
+    font-size: 0.875rem !important;
+}
+
+.table th {
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-top: none;
+}
+
+.border-end {
+    border-right: 1px solid #dee2e6 !important;
+}
+</style>
+{% endblock %}

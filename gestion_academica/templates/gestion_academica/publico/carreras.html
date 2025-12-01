@@ -1,0 +1,122 @@
+{% extends 'gestion_academica/base.html' %}
+
+{% block title %}Carreras Disponibles - Sistema Académico{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="bg-light p-4 rounded">
+            <h1 class="mb-2">
+                <i class="bi bi-book-fill"></i>
+                Carreras Disponibles
+            </h1>
+            <p class="mb-0 text-muted">Aquí puedes consultar todas las carreras disponibles en nuestra institución.</p>
+        </div>
+    </div>
+</div>
+
+{% if carreras %}
+    <!-- Career Cards -->
+    <div class="row">
+        {% for carrera in carreras %}
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-mortarboard-fill"></i>
+                            {{ carrera.nombre }}
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <small class="text-muted">Código</small>
+                                <p class="fw-bold mb-0">{{ carrera.codigo }}</p>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Duración</small>
+                                <p class="fw-bold mb-0">
+                                    <i class="bi bi-calendar3"></i>
+                                    {{ carrera.duracion_anios }} años
+                                </p>
+                            </div>
+                        </div>
+                        
+                        {% if carrera.descripcion %}
+                            <div class="mb-3">
+                                <small class="text-muted">Descripción</small>
+                                <p class="card-text">{{ carrera.descripcion }}</p>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <small class="text-muted">Estado</small>
+                            <div>
+                                {% if carrera.activa %}
+                                    <span class="badge bg-success fs-6">
+                                        <i class="bi bi-check-circle"></i>
+                                        Activa
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger fs-6">
+                                        <i class="bi bi-x-circle"></i>
+                                        No disponible
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'materias_publicas' %}?carrera={{ carrera.id }}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-journal-text"></i>
+                            Ver Materias de esta Carrera
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <!-- Empty State -->
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info d-flex align-items-center" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                <div>
+                    <strong>Sin carreras disponibles</strong><br>
+                    No hay carreras disponibles actualmente. Vuelve más tarde para ver las novedades.
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<!-- Additional Information -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h3 class="card-title mb-0">
+                    <i class="bi bi-info-circle"></i>
+                    Más Información
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'materias_publicas' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-journal-text text-primary"></i>
+                        <strong class="ms-2">Ver Todas las Materias</strong>
+                        <p class="mb-0 ms-4 text-muted">Consulta el catálogo completo de materias disponibles</p>
+                    </a>
+                    <a href="{% url 'materias_por_carrera' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-search text-success"></i>
+                        <strong class="ms-2">Consultas por Carrera</strong>
+                        <p class="mb-0 ms-4 text-muted">Busca materias específicas organizadas por carrera</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

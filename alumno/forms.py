@@ -3,7 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from usuario.models import Usuario
 from .models import Alumno
-from carreras.models import Carrera
+from carrera.models import Carrera
+from django.utils import timezone
 
 
 class AlumnoForm(forms.ModelForm):
@@ -58,17 +59,16 @@ class AlumnoForm(forms.ModelForm):
 
     class Meta:
         model = Alumno
-        fields = ['legajo', 'carrera', 'fecha_ingreso', 'telefono', 'direccion', 'observaciones']
+        fields = ['legajo', 'carrera', 'fecha_ingreso', 'telefono', 'direccion', 'observaciones', 'activo']
         widgets = {
             'legajo': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'LEG-2024-0001',
-                'pattern': 'LEG-[0-9]{4}-[0-9]{4}'
+                'placeholder': 'Ej: 12345',
             }),
             'carrera': forms.Select(attrs={
                 'class': 'form-select'
             }),
-            'fecha_ingreso': forms.DateInput(attrs={
+            'fecha_ingreso': forms.DateInput(format='%Y-%m-%d', attrs={
                 'class': 'form-control',
                 'type': 'date'
             }),
@@ -85,6 +85,7 @@ class AlumnoForm(forms.ModelForm):
                 'rows': 3,
                 'placeholder': 'Observaciones adicionales (opcional)'
             }),
+            'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
         labels = {
             'legajo': 'Legajo',
@@ -93,6 +94,7 @@ class AlumnoForm(forms.ModelForm):
             'telefono': 'Teléfono',
             'direccion': 'Dirección',
             'observaciones': 'Observaciones',
+            'activo': 'Alumno Activo',
         }
 
     def __init__(self, *args, **kwargs):
@@ -147,6 +149,21 @@ class AlumnoForm(forms.ModelForm):
             if exists.exists():
                 raise ValidationError('Ya existe un alumno con este legajo')
         return legajo.upper()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        activo = cleaned_data.get('activo')
+        
+        # Manejar lógica de fecha_baja basada en el estado activo
+        if activo is False:
+            # Si se desactiva y no tiene fecha de baja, asignar fecha actual
+            if not self.instance.fecha_baja:
+                self.instance.fecha_baja = timezone.now().date()
+        elif activo is True:
+            # Si se activa, limpiar fecha de baja
+            self.instance.fecha_baja = None
+            
+        return cleaned_data
 
     def save(self, commit=True):
         """

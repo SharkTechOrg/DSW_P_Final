@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('carreras', '0001_initial'),
+        ('carrera', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('activo', models.BooleanField(default=True, verbose_name='Activo')),
                 ('fecha_baja', models.DateField(blank=True, null=True, verbose_name='Fecha de Baja')),
                 ('observaciones', models.TextField(blank=True, verbose_name='Observaciones')),
-                ('carrera', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='alumnos', to='carreras.carrera', verbose_name='Carrera')),
+                ('carrera', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='alumnos', to='carrera.carrera', verbose_name='Carrera')),
                 ('usuario', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='alumno', to=settings.AUTH_USER_MODEL, verbose_name='Usuario')),
             ],
             options={

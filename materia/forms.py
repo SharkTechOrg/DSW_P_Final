@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Carrera, Materia
+from carrera.models import Carrera
+from .models import Materia
 
 class MateriaForm(forms.ModelForm):
     """
@@ -8,7 +9,7 @@ class MateriaForm(forms.ModelForm):
     """
     class Meta:
         model = Materia
-        fields = ['nombre', 'codigo', 'carrera', 'año', 'cuatrimestre', 'cupo_maximo', 'descripcion']
+        fields = ['nombre', 'codigo', 'carrera', 'año', 'cuatrimestre', 'cupo_maximo', 'descripcion', 'activa']
         labels = {
             'nombre': 'Nombre de la Materia',
             'codigo': 'Código',
@@ -17,6 +18,7 @@ class MateriaForm(forms.ModelForm):
             'cuatrimestre': 'Cuatrimestre',
             'cupo_maximo': 'Cupo Máximo',
             'descripcion': 'Descripción',
+            'activa': 'Materia Activa',
         }
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Ej: Programación I'}),
@@ -24,6 +26,7 @@ class MateriaForm(forms.ModelForm):
             'año': forms.NumberInput(attrs={'min': '1', 'max': '6'}),
             'cupo_maximo': forms.NumberInput(attrs={'min': '1', 'max': '100', 'value': '30'}),
             'descripcion': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Descripción de la materia...'}),
+            'activa': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -49,8 +52,8 @@ class MateriaForm(forms.ModelForm):
 
         # Validar que el año no supere la duración de la carrera
         if carrera and año:
-            if año > carrera.duracion_años:
-                raise ValidationError(f'El año {año} supera la duración de la carrera ({carrera.duracion_años} años).')
+            if año > carrera.duracion_anios:
+                raise ValidationError(f'El año {año} supera la duración de la carrera ({carrera.duracion_anios} años).')
 
         return cleaned_data
 

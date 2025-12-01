@@ -22,8 +22,8 @@ class MateriaService:
                     raise ValidationError(f'Ya existe una materia con código "{codigo}" en esta carrera')
                 
                 # Validar que el año no supere la duración de la carrera
-                if año > carrera.duracion_años:
-                    raise ValidationError(f'El año {año} supera la duración de la carrera ({carrera.duracion_años} años)')
+                if año > carrera.duracion_anios:
+                    raise ValidationError(f'El año {año} supera la duración de la carrera ({carrera.duracion_anios} años)')
                 
                 materia = Materia.objects.create(
                     nombre=nombre.strip().title(),

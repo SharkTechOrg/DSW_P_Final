@@ -1,0 +1,333 @@
+{% extends 'gestion_academica/base.html' %}
+
+{% block title %}Alumnos - Sistema Académico{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h2 mb-1">
+            <i class="bi bi-people-fill text-primary me-2"></i>
+            Gestión de Alumnos
+        </h1>
+        <p class="text-muted mb-0">Administra la información de los estudiantes registrados</p>
+    </div>
+    <div>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary me-2">
+            <i class="bi bi-arrow-left me-2"></i>Volver al Inicio
+        </a>
+        <a href="{% url 'alumno_create' %}" class="btn btn-primary">
+            <i class="bi bi-person-plus-fill me-2"></i>
+            Crear Nuevo Alumno
+        </a>
+    </div>
+</div>
+
+<!-- Filtros y Búsqueda -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control" placeholder="Buscar por nombre, DNI o legajo..." value="{{ search }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="carrera" class="form-select">
+                    <option value="">Todas las Carreras</option>
+                    {% for carrera in carreras %}
+                        <option value="{{ carrera.id }}" {% if carrera_seleccionada|add:"0" == carrera.id %}selected{% endif %}>
+                            {{ carrera.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="estado" class="form-select">
+                    <option value="">Todos los Estados</option>
+                    <option value="activo" {% if estado_seleccionado == 'activo' %}selected{% endif %}>Activos</option>
+                    <option value="inactivo" {% if estado_seleccionado == 'inactivo' %}selected{% endif %}>Inactivos</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if alumnos %}
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-white-50 mb-1">Total Histórico</h6>
+                            <h2 class="mb-0 fw-bold">{{ total_alumnos_count }}</h2>
+                        </div>
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3" style="padding-inline: 1.375rem !important;">
+                            <i class="bi bi-people fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title text-white-50 mb-1">Alumnos Activos</h6>
+                            <h2 class="mb-0 fw-bold">{{ alumnos_activos_count }}</h2>
+                        </div>
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3" style="padding-inline: 1.375rem !important;">
+                            <i class="bi bi-person-check fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Alumnos -->
+    <div class="card shadow">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">
+                <i class="bi bi-table me-2"></i>
+                Lista de Alumnos
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">
+                                <i class="bi bi-hash me-1"></i>Legajo
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-person me-1"></i>Nombre Completo
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-card-text me-1"></i>DNI
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-envelope me-1"></i>Email
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-building me-1"></i>Carrera
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-calendar me-1"></i>Año Ingreso
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-check-circle me-1"></i>Estado
+                            </th>
+                            <th scope="col">
+                                <i class="bi bi-person-badge me-1"></i>Usuario
+                            </th>
+                            <th scope="col" class="text-center">
+                                <i class="bi bi-gear me-1"></i>Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for alumno in alumnos %}
+                        <tr>
+                            <td class="fw-bold text-primary">{{ alumno.legajo }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0 bg-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                        <i class="bi bi-person-fill text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-semibold">{{ alumno.nombre_completo }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="font-monospace">{{ alumno.dni }}</span></td>
+                            <td>
+                                <a href="mailto:{{ alumno.email }}" class="text-decoration-none">
+                                    <i class="bi bi-envelope me-1"></i>{{ alumno.email }}
+                                </a>
+                            </td>
+                            <td>
+                                <span class="badge bg-info text-dark">{{ alumno.carrera.nombre }}</span>
+                            </td>
+                            <td>{{ alumno.fecha_ingreso }}</td>
+                            <td>
+                                {% if alumno.activo %}
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Activo
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle-fill me-1"></i>Inactivo
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if alumno.usuario %}
+                                    {% if alumno.usuario.is_active %}
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-person-check-fill me-1"></i>Activo
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="bi bi-person-x-fill me-1"></i>Inactivo
+                                        </span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-person-dash me-1"></i>Sin usuario
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'alumno_detail' alumno.pk %}" class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{% url 'alumno_update' alumno.pk %}" class="btn btn-sm btn-outline-secondary" title="Editar alumno">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    {% if alumno.usuario %}
+                                        <a href="{% url 'usuario_update' alumno.usuario.pk %}" class="btn btn-sm btn-outline-info" title="Editar usuario">
+                                            <i class="bi bi-person-gear"></i>
+                                        </a>
+                                    {% endif %}
+                                    <a href="{% url 'alumno_delete' alumno.pk %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Paginación -->
+        {% if is_paginated %}
+        <div class="card-footer bg-light">
+            <nav aria-label="Navegación de páginas">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="Primera">
+                                <i class="bi bi-chevron-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="bi bi-chevron-double-left"></i></span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="bi bi-chevron-left"></i></span>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Siguiente">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Última">
+                                <i class="bi bi-chevron-double-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="bi bi-chevron-right"></i></span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="bi bi-chevron-double-right"></i></span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+{% else %}
+    <!-- Estado vacío -->
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-people display-1 text-muted"></i>
+        </div>
+        <h3 class="text-muted">No hay alumnos registrados</h3>
+        <p class="text-muted mb-4">Comienza agregando el primer alumno al sistema</p>
+        <a href="{% url 'alumno_create' %}" class="btn btn-primary btn-lg">
+            <i class="bi bi-person-plus-fill me-2"></i>
+            Crear Primer Alumno
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.table th {
+    border-top: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-group .btn {
+    border-radius: 0.25rem !important;
+    margin-right: 2px;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.font-monospace {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.table-responsive {
+    border-radius: 0.5rem;
+}
+
+.pagination .page-link {
+    border: none;
+    color: #6c757d;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+</style>
+{% endblock %}
