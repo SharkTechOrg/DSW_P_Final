@@ -36,7 +36,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             context['stats'] = ReportesService.reporte_general()
         elif user.groups.filter(name='Alumnos').exists():
             try:
-                alumno = user.perfil_alumno
+                alumno = user.alumno
                 context['alumno'] = alumno
                 context['inscripciones'] = InscripcionService.obtener_inscripciones_alumno(alumno.id)
             except:
@@ -177,7 +177,7 @@ class MisMateriaView(AlumnoRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            alumno = self.request.user.perfil_alumno
+            alumno = self.request.user.alumno
             context['alumno'] = alumno
             context['inscripciones'] = InscripcionService.obtener_inscripciones_alumno(alumno.id)
         except:
@@ -199,7 +199,7 @@ class OfertaAcademicaView(AlumnoRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            alumno = self.request.user.perfil_alumno
+            alumno = self.request.user.alumno
             context['alumno'] = alumno
             context['materias'] = MateriaService.obtener_materias_por_carrera(alumno.carrera.id)
             
@@ -217,7 +217,7 @@ class InscribirseView(AlumnoRequiredMixin, View):
     """Vista para que el alumno se inscriba a una materia"""
     def post(self, request, materia_id):
         try:
-            alumno = request.user.perfil_alumno
+            alumno = request.user.alumno
             inscripcion = InscripcionService.inscribir_alumno(alumno.id, materia_id)
             messages.success(request, f'Te has inscripto exitosamente a {inscripcion.materia.nombre}.')
         except ValidationError as e:

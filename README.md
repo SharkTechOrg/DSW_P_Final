@@ -76,3 +76,7 @@ Después de ejecutar `cargar_datos_iniciales`:
 - **Administrador**: admin@crui.edu.ar / admin123
 - **Invitado**: invitado@ejemplo.com / 87654321 TODO: quitar grupo invitado, y permitir acceso sin login
 - **Alumnos**: usar email del alumno / contraseña: su DNI
+   - juan.gonzalez@estudiante.crui.edu.ar / 20123456
+   - maria.rodriguez@estudiante.crui.edu.ar / 20234567
+   - carlos.fernandez@estudiante.crui.edu.ar / 20345678
+   - ana.lopez@estudiante.crui.edu.ar / 20456789
