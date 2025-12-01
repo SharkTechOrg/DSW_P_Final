@@ -28,11 +28,18 @@
 <div class="card shadow-sm mb-4">
     <div class="card-body">
         <form method="get" class="row g-3">
-            <div class="col-md-10">
+            <div class="col-md-8">
                 <div class="input-group">
                     <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
                     <input type="text" name="search" class="form-control" placeholder="Buscar por nombre, DNI o email..." value="{{ search }}">
                 </div>
+            </div>
+            <div class="col-md-2">
+                <select name="estado" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="activo" {% if estado_seleccionado == 'activo' %}selected{% endif %}>Activos</option>
+                    <option value="inactivo" {% if estado_seleccionado == 'inactivo' %}selected{% endif %}>Inactivos</option>
+                </select>
             </div>
             <div class="col-md-2 d-grid">
                 <button type="submit" class="btn btn-primary">Filtrar</button>
@@ -75,15 +82,15 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-dark h-100">
+            <div class="card bg-danger text-white h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-title text-black-50 mb-1">Administradores</h6>
-                            <h2 class="mb-0 fw-bold">{{ administradores }}</h2>
+                            <h6 class="card-title text-white-50 mb-1">Inactivos</h6>
+                            <h2 class="mb-0 fw-bold">{{ usuarios_inactivos }}</h2>
                         </div>
                         <div class="bg-white bg-opacity-25 rounded-circle p-3" style="padding-inline: 1.375rem !important;">
-                            <i class="bi bi-person-gear fs-4"></i>
+                            <i class="bi bi-person-x-fill fs-4"></i>
                         </div>
                     </div>
                 </div>

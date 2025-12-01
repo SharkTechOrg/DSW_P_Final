@@ -27,11 +27,18 @@
 <div class="card shadow-sm mb-4">
     <div class="card-body">
         <form method="get" class="row g-3">
-            <div class="col-md-10">
+            <div class="col-md-8">
                 <div class="input-group">
                     <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
                     <input type="text" name="search" class="form-control" placeholder="Buscar por nombre o código..." value="{{ search }}">
                 </div>
+            </div>
+            <div class="col-md-2">
+                <select name="estado" class="form-select">
+                    <option value="">Todas</option>
+                    <option value="activa" {% if estado_seleccionado == 'activa' %}selected{% endif %}>Activas</option>
+                    <option value="inactiva" {% if estado_seleccionado == 'inactiva' %}selected{% endif %}>Inactivas</option>
+                </select>
             </div>
             <div class="col-md-2 d-grid">
                 <button type="submit" class="btn btn-primary">Filtrar</button>

@@ -99,7 +99,15 @@ class UsuarioListView(AdminRequiredMixin, ListView):
     paginate_by = 10
     
     def get_queryset(self):
-        queryset = Usuario.objects.filter(is_active=True)
+        queryset = Usuario.objects.all()
+        
+        # Filtro por estado
+        estado = self.request.GET.get('estado')
+        if estado == 'activo':
+            queryset = queryset.filter(is_active=True)
+        elif estado == 'inactivo':
+            queryset = queryset.filter(is_active=False)
+        # Si no hay filtro o es 'todos', mostrar todos
         
         # Filtro por búsqueda
         search = self.request.GET.get('search')
@@ -117,9 +125,11 @@ class UsuarioListView(AdminRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['search'] = self.request.GET.get('search', '')
+        context['estado_seleccionado'] = self.request.GET.get('estado', '')
         # Stats
         context['total_usuarios'] = Usuario.objects.count()
         context['usuarios_activos'] = Usuario.objects.filter(is_active=True).count()
+        context['usuarios_inactivos'] = Usuario.objects.filter(is_active=False).count()
         context['administradores'] = Usuario.objects.filter(groups__name='Administradores').count()
         context['alumnos'] = Usuario.objects.filter(groups__name='Alumnos').count()
         return context

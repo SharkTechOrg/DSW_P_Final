@@ -21,7 +21,16 @@ class CarreraListView(AdminRequiredMixin, ListView):
     paginate_by = 10
     
     def get_queryset(self):
-        queryset = Carrera.objects.filter(activa=True)
+        queryset = Carrera.objects.all()
+        
+        # Filtro por estado
+        estado = self.request.GET.get('estado')
+        if estado == 'activa':
+            queryset = queryset.filter(activa=True)
+        elif estado == 'inactiva':
+            queryset = queryset.filter(activa=False)
+        # Si no hay filtro o es 'todos', mostrar todos
+        
         search = self.request.GET.get('search')
         if search:
             from django.db.models import Q
@@ -34,6 +43,7 @@ class CarreraListView(AdminRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['search'] = self.request.GET.get('search', '')
+        context['estado_seleccionado'] = self.request.GET.get('estado', '')
         # Stats
         context['total_carreras'] = Carrera.objects.count()
         context['carreras_activas'] = Carrera.objects.filter(activa=True).count()

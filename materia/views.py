@@ -24,7 +24,15 @@ class MateriaListView(AdminRequiredMixin, ListView):
     paginate_by = 10
     
     def get_queryset(self):
-        queryset = Materia.objects.filter(activa=True).select_related('carrera')
+        queryset = Materia.objects.all().select_related('carrera')
+        
+        # Filtro por estado
+        estado = self.request.GET.get('estado')
+        if estado == 'activa':
+            queryset = queryset.filter(activa=True)
+        elif estado == 'inactiva':
+            queryset = queryset.filter(activa=False)
+        # Si no hay filtro o es 'todos', mostrar todos
         
         # Filtro por búsqueda
         search = self.request.GET.get('search')
@@ -46,10 +54,12 @@ class MateriaListView(AdminRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['filtro_form'] = FiltroMateriaForm(self.request.GET or None)
         context['search'] = self.request.GET.get('search', '')
+        context['estado_seleccionado'] = self.request.GET.get('estado', '')
         
         # Calcular estadísticas
         materias_queryset = self.get_queryset()
         context['materias_activas'] = materias_queryset.filter(activa=True).count()
+        context['materias_inactivas'] = materias_queryset.filter(activa=False).count()
         context['total_cupo'] = sum(m.cupo_maximo for m in materias_queryset)
         context['cupo_disponible'] = sum(m.cupo_disponible for m in materias_queryset)
         
