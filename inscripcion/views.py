@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import (
     View, ListView, CreateView
 )
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 
 from usuario.views import AdminRequiredMixin, AlumnoRequiredMixin
@@ -69,16 +70,43 @@ class InscripcionCreateView(AdminRequiredMixin, CreateView):
             return self.form_invalid(form)
 
 
-class InscripcionBajaView(AdminRequiredMixin, AlumnoRequiredMixin, View):
+class InscripcionBajaView(LoginRequiredMixin, View):
     """Da de baja una inscripción"""
     def post(self, request, pk):
         try:
-            inscripcion = InscripcionService.dar_de_baja_inscripcion(pk)
+            inscripcion = Inscripcion.objects.get(pk=pk)
+            
+            # Verificar permisos
+            es_admin = request.user.groups.filter(name='Administradores').exists()
+            es_alumno = request.user.groups.filter(name='Alumnos').exists()
+            
+            if not es_admin and not es_alumno:
+                messages.error(request, 'No tienes permisos para realizar esta acción.')
+                return redirect('dashboard')
+            
+            # Si es alumno, verificar que la inscripción sea suya
+            if es_alumno and not es_admin:
+                if inscripcion.alumno.usuario != request.user:
+                    messages.error(request, 'No puedes dar de baja una inscripción que no te pertenece.')
+                    return redirect('mis_materias')
+            
+            # Realizar la baja
+            InscripcionService.dar_de_baja_inscripcion(pk)
             messages.success(request, f'Inscripción dada de baja exitosamente.')
+            
+            # Redireccionar según rol
+            if es_alumno and not es_admin:
+                return redirect('mis_materias')
+            return redirect('inscripcion_list')
+            
+        except Inscripcion.DoesNotExist:
+            messages.error(request, 'La inscripción no existe.')
+            return redirect('dashboard')
         except ValidationError as e:
             messages.error(request, str(e.message), extra_tags='danger')
-        
-        return redirect('inscripcion_list')
+            if es_alumno:
+                return redirect('mis_materias')
+            return redirect('inscripcion_list')
 
 
 def load_materias(request):

@@ -21,15 +21,28 @@ class InscripcionService:
                 if alumno.carrera != materia.carrera:
                     raise ValidationError('El alumno no puede inscribirse a una materia de otra carrera')
                 
-                # Validar que no esté ya inscripto
-                if Inscripcion.objects.filter(alumno=alumno, materia=materia).exists():
-                    raise ValidationError('El alumno ya está inscripto en esta materia')
+                # Validar si ya existe una inscripción
+                inscripcion_existente = Inscripcion.objects.filter(alumno=alumno, materia=materia).first()
                 
-                # Validar cupo disponible
+                if inscripcion_existente:
+                    if inscripcion_existente.activa:
+                        raise ValidationError('El alumno ya está inscripto en esta materia')
+                    else:
+                        # Si existe pero está inactiva, reactivarla
+                        # Validar cupo disponible antes de reactivar
+                        if not materia.tiene_cupo:
+                            raise ValidationError('No hay cupo disponible en esta materia')
+                            
+                        inscripcion_existente.activa = True
+                        inscripcion_existente.fecha_baja = None
+                        inscripcion_existente.save()
+                        return inscripcion_existente
+                
+                # Validar cupo disponible para nueva inscripción
                 if not materia.tiene_cupo:
                     raise ValidationError('No hay cupo disponible en esta materia')
                 
-                # Crear inscripción
+                # Crear inscripción nueva
                 inscripcion = Inscripcion.objects.create(
                     alumno=alumno,
                     materia=materia,
