@@ -11,7 +11,7 @@ Sistema web desarrollado en Django para la gestión académica de instituciones 
 - **Sistema de Inscripciones**: Inscripción y baja de alumnos en materias
 - **Control de Cupos**: Validación automática de cupos disponibles
 - **Filtros y Consultas**: Búsquedas por carrera, materia y alumno
-- **Roles de Usuario**: Administrador, Alumno, Invitado
+- **Roles de Usuario**: Administrador, Alumno
 
 ## Tecnologías
 

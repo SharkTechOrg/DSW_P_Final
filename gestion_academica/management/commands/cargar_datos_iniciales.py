@@ -310,7 +310,6 @@ class Command(BaseCommand):
                 
                 self.stdout.write('\n--- USUARIOS DE PRUEBA ---')
                 self.stdout.write('Administrador: admin@crui.edu.ar / contraseña: admin123')
-                self.stdout.write('Invitado: invitado@ejemplo.com / contraseña: 87654321')
                 self.stdout.write('Alumnos: usar email del alumno / contraseña: su DNI')
                 self.stdout.write('- juan.gonzalez@estudiante.crui.edu.ar / 20123456')
                 self.stdout.write('- maria.rodriguez@estudiante.crui.edu.ar / 20234567')
